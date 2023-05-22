@@ -1,4 +1,4 @@
-FROM alpine AS Builder
+FROM python:3.10-alpine AS Builder
 RUN apk add --no-cache --virtual .build-deps \
         libffi-dev \
         gcc \
@@ -29,8 +29,8 @@ ENV S6_SERVICES_GRACETIME=30000 \
     LANG="C.UTF-8" \
     TZ="Asia/Shanghai" \
     NASTOOL_CONFIG="/config/config.yaml" \
-    NASTOOL_AUTO_UPDATE=true \
-    NASTOOL_CN_UPDATE=true \
+    NASTOOL_AUTO_UPDATE=false \
+    NASTOOL_CN_UPDATE=false \
     NASTOOL_VERSION=dev \
     PS1="\u@\h:\w \$ " \
     REPO_URL="https://github.com/mysll/nts.git" \
@@ -45,7 +45,7 @@ RUN mkdir ${HOME} \
     && addgroup -S nt -g 911 \
     && adduser -S nt -G nt -h ${HOME} -s /bin/bash -u 911 \
     && python_ver=$(python3 -V | awk '{print $2}') \
-    && echo "${WORKDIR}/" > /usr/lib/python${python_ver%.*}/site-packages/nas-tools.pth \
+    && echo "${WORKDIR}/" > /usr/local/lib/python${python_ver%.*}/site-packages/nas-tools.pth \
     && echo 'fs.inotify.max_user_watches=5242880' >> /etc/sysctl.conf \
     && echo 'fs.inotify.max_user_instances=5242880' >> /etc/sysctl.conf \
     && echo "nt ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
