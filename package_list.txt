@@ -1,0 +1,15 @@
+git
+tzdata
+zip
+curl
+bash
+fuse3
+xvfb
+inotify-tools
+chromium-chromedriver
+s6-overlay
+ffmpeg
+redis
+wget
+shadow
+sudo
