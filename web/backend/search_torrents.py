@@ -431,11 +431,16 @@ def __search_media(in_from, media_info, user_id, user_name=None):
     else:
         # 搜索到了但是没开自动下载
         if download_count is None:
-            Message().send_channel_msg(channel=in_from,
-                                       title="%s 共搜索到%s个资源，点击选择下载" % (media_info.title, search_count),
-                                       image=media_info.get_message_image(),
-                                       url="search",
-                                       user_id=user_id)
+            # Message().send_channel_msg(channel=in_from,
+            #                            title="%s 共搜索到%s个资源，点击选择下载" % (media_info.title, search_count),
+            #                            image=media_info.get_message_image(),
+            #                            url="search",
+            #                            user_id=user_id)
+            media_list = Searcher().get_search_results()
+            Message().send_channel_list_msg(channel=in_from, 
+                                            title="%s 共搜索到%s个资源，点击选择下载" % (media_info.title, search_count),
+                                            medias=media_list,
+                                            user_id=user_id)
             return
         else:
             # 搜索到了但是没下载到数据
