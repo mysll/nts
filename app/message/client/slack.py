@@ -6,7 +6,7 @@ from slack_sdk.errors import SlackApiError
 
 import log
 from app.message.client._base import _IMessageClient
-from app.utils import ExceptionUtils
+from app.utils import ExceptionUtils, StringUtils
 from config import Config
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -51,6 +51,12 @@ class Slack(_IMessageClient):
 
             @slack_app.action(re.compile(r"actionId-\d+"))
             def slack_action(ack, body):
+                ack()
+                local_res = requests.post(self._ds_url, json=body, timeout=60)
+                log.debug("【Slack】message: %s processed, response is: %s" % (body, local_res.text))
+
+            @slack_app.action(re.compile(r"downloadId-\d+"))
+            def slack_download(ack, body):
                 ack()
                 local_res = requests.post(self._ds_url, json=body, timeout=60)
                 log.debug("【Slack】message: %s processed, response is: %s" % (body, local_res.text))
@@ -163,7 +169,7 @@ class Slack(_IMessageClient):
             ExceptionUtils.exception_traceback(msg_e)
             return False, str(msg_e)
 
-    def send_list_msg(self, medias: list, user_id="", **kwargs):
+    def send_list_msg(self, medias: list, user_id="", download=False, **kwargs):
         """
         发送列表类消息
         """
@@ -194,16 +200,56 @@ class Slack(_IMessageClient):
                 })
                 index = 1
                 for media in medias:
-                    if media.get_poster_image():
-                        if media.get_star_string():
-                            text = f"{index}. *<{media.get_detail_url()}|{media.get_title_string()}>*" \
-                                   f"\n{media.get_type_string()}" \
-                                   f"\n{media.get_star_string()}" \
-                                   f"\n{media.get_overview_string(50)}"
-                        else:
-                            text = f"{index}. *<{media.get_detail_url()}|{media.get_title_string()}>*" \
-                                   f"\n{media.get_type_string()}" \
-                                   f"\n{media.get_overview_string(50)}"
+                    if not download:
+                        if media.get_poster_image():
+                            if media.get_star_string():
+                                text = f"{index}. *<{media.get_detail_url()}|{media.get_title_string()}>*" \
+                                       f"\n{media.get_type_string()}" \
+                                       f"\n{media.get_star_string()}" \
+                                       f"\n{media.get_overview_string(50)}"
+                            else:
+                                text = f"{index}. *<{media.get_detail_url()}|{media.get_title_string()}>*" \
+                                       f"\n{media.get_type_string()}" \
+                                       f"\n{media.get_overview_string(50)}"
+                            blocks.append(
+                                {
+                                    "type": "section",
+                                    "text": {
+                                        "type": "mrkdwn",
+                                        "text": text
+                                    },
+                                    "accessory": {
+                                        "type": "image",
+                                        "image_url": f"{media.get_poster_image()}",
+                                        "alt_text": f"{media.get_title_string()}"
+                                    }
+                                }
+                            )
+                            blocks.append(
+                                {
+                                    "type": "actions",
+                                    "elements": [
+                                        {
+                                            "type": "button",
+                                            "text": {
+                                                "type": "plain_text",
+                                                "text": "选择",
+                                                "emoji": True
+                                            },
+                                            "value": f"{index}",
+                                            "action_id": f"actionId-{index}"
+                                        }
+                                    ]
+                                }
+                            )
+                    else:
+                        text = f"{index}. *{media.org_string}*" \
+                               f"\n站点：{media.site}" \
+                               f"\n编码：{media.video_encode}" \
+                               f"\n大小： {StringUtils.str_filesize(int(media.size))}" \
+                               f"\n格式： {media.resource_type}" \
+                               f"\n促销： *{'FREE' if media.download_volume_factor == 0.0 else 'NO'}*" \
+                               f"\n做种： {media.seeders}↑"
                         blocks.append(
                             {
                                 "type": "section",
@@ -211,11 +257,6 @@ class Slack(_IMessageClient):
                                     "type": "mrkdwn",
                                     "text": text
                                 },
-                                "accessory": {
-                                    "type": "image",
-                                    "image_url": f"{media.get_poster_image()}",
-                                    "alt_text": f"{media.get_title_string()}"
-                                }
                             }
                         )
                         blocks.append(
@@ -229,13 +270,13 @@ class Slack(_IMessageClient):
                                             "text": "选择",
                                             "emoji": True
                                         },
-                                        "value": f"{index}",
-                                        "action_id": f"actionId-{index}"
+                                        "value": f"download_{index}",
+                                        "action_id": f"downloadId-{index}"
                                     }
                                 ]
                             }
                         )
-                        index += 1
+                    index += 1
             # 发送
             result = self._client.chat_postMessage(
                 channel=channel,

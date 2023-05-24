@@ -173,7 +173,7 @@ class Message(object):
             return state
         return False
 
-    def __send_list_msg(self, client, medias, user_id, title):
+    def __send_list_msg(self, client, medias, user_id, title, download):
         """
         发送选择类消息
         """
@@ -184,18 +184,20 @@ class Message(object):
         state, ret_msg = client.get('client').send_list_msg(medias=medias,
                                                             user_id=user_id,
                                                             title=title,
-                                                            url=self._domain)
+                                                            url=self._domain,
+                                                            download=download)
         if not state:
             log.error(f"【Message】{cname} 发送消息失败：%s" % ret_msg)
         return state
 
-    def send_channel_list_msg(self, channel, title, medias: list, user_id=""):
+    def send_channel_list_msg(self, channel, title, medias: list, user_id="", download=False):
         """
         发送列表选择消息，用于消息交互
         :param channel: 消息渠道
         :param title: 消息标题
         :param medias: 媒体信息列表
         :param user_id: 用户ID，如有则只发给这个用户
+        :param download: 是否是下载
         :return: 发送状态、错误信息
         """
         if channel == SearchType.WEB:
@@ -211,7 +213,8 @@ class Message(object):
             state = self.__send_list_msg(client=client,
                                          title=title,
                                          medias=medias,
-                                         user_id=user_id)
+                                         user_id=user_id,
+                                         download=download)
             return state
         return False
 

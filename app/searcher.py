@@ -10,7 +10,6 @@ from app.media import Media
 from app.helper import ProgressHelper
 from app.utils.types import SearchType, EventType, ProgressKey
 
-
 @singleton
 class Searcher:
     downloader = None
@@ -20,6 +19,7 @@ class Searcher:
     progress = None
     dbhelper = None
     eventmanager = None
+    _last_result = None
 
     _search_auto = True
 
@@ -84,6 +84,7 @@ class Searcher:
                  搜索到的结果数量
                  下载到的结果数量，如为None则表示未开启自动下载
         """
+
         if not media_info:
             return None, {}, 0, 0
         # 进度计数重置
@@ -171,6 +172,8 @@ class Searcher:
                                     reverse=True)
                 # 插入数据库
                 self.insert_search_results(media_list)
+
+                self._last_result = media_list
                 # 微信未开自动下载时返回
                 if not self._search_auto:
                     return None, no_exists, len(media_list), None
@@ -221,3 +224,6 @@ class Searcher:
         :param ident_flag: 是否标识
         """
         self.dbhelper.insert_search_results(media_items, title, ident_flag)
+
+    def get_last_result(self):
+        return self._last_result
