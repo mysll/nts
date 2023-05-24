@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - master
     paths:
       - version.py
       - .github/workflows/build-package.yml
@@ -22,7 +22,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wheel pyinstaller==5.7.0
-          git clone --depth=1 -b main https://github.com/mysll/nts --recurse-submodule
+          git clone --depth=1 -b master https://github.com/mysll/nts --recurse-submodule
           cd nts
           pip install -r requirements.txt
           echo ("NASTOOL_CONFIG=/home/runner/work/nts/nts/nts/config/config.yaml") >> $env:GITHUB_ENV
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@master
 
       - name: Set Up QEMU
         uses: docker/setup-qemu-action@v1
@@ -72,7 +72,7 @@ jobs:
       - name: Package through pyinstaller
         run: |
           mkdir rootfs
-          docker buildx build --platform linux/amd64 --file ./package/builder/alpine.Dockerfile --build-arg branch=main --output type=local,dest=./rootfs .
+          docker buildx build --platform linux/amd64 --file ./package/builder/alpine.Dockerfile --build-arg branch=master --output type=local,dest=./rootfs .
           mkdir -p /home/runner/work/nts/nts/nts/package/dist/
           cp ./rootfs/nas-tools /home/runner/work/nts/nts/nts/package/dist/nts.linux.musl.amd64
         shell: pwsh
