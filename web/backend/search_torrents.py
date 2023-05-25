@@ -297,13 +297,14 @@ def search_media_by_message(input_str, in_from: SearchType, user_id, user_name=N
                                                text=f"无效的下载",
                                                user_id=user_id)
                     return
-                Downloader().download(media_info=media_list[download_id],
+                media_info = media_list[download_id]
+                Downloader().download(media_info=media_info,
                                       in_from=in_from,
                                       user_name=user_name)
 
                 Message().send_channel_msg(channel=in_from,
                                            title="",
-                                           text=f"开始下载第{download_id}个文件",
+                                           text=f"开始下载{media_info.org_string}",
                                            user_id=user_id)
         # 聊天
         elif SEARCH_MEDIA_TYPE[user_id] == "ASK":
