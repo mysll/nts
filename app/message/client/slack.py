@@ -248,7 +248,7 @@ class Slack(_IMessageClient):
                                f"\n编码：{media.video_encode}" \
                                f"\n大小： {StringUtils.str_filesize(int(media.size))}" \
                                f"\n格式： {media.resource_type}" \
-                               f"\n促销： *{'FREE' if media.download_volume_factor == 0.0 else 'NO'}*" \
+                               f"\n促销： *{'免费' if media.download_volume_factor == 0.0 else '普通'}*" \
                                f"\n做种： {media.seeders}↑"
                         blocks.append(
                             {
