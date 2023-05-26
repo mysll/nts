@@ -250,7 +250,7 @@ def search_media_by_message(input_str, in_from: SearchType, user_id, user_name=N
             SEARCH_MEDIA_TYPE[user_id] = "ASK"
         elif input_str.startswith("download_"):
             SEARCH_MEDIA_TYPE[user_id] = "DOWNLOAD"
-            download_id = int(input_str[len("download_"):])
+            download_id = int(input_str[len("download_"):])-1
         else:
             # 搜索
             input_str = re.sub(r"(搜索|下载)[:：\s]*", "", input_str)
