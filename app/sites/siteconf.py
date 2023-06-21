@@ -111,12 +111,6 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        'www.haidan.video': {
-            'FREE': ["//img[@class='pro_free'][@title='免费']"],
-            '2XFREE': [],
-            'HR': [],
-            'PEER_COUNT': ["//div[@class='torrent']/div[1]/div[1]/div[3]"],
-        },
         'kp.m-team.cc': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': [],
@@ -127,7 +121,7 @@ class SiteConf:
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': [],
             'HR': [],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"]
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'discfan.net': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
@@ -151,13 +145,13 @@ class SiteConf:
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': ["//h1[@id='top']/img[@class='hitandrun']"],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"]
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'pterclub.com': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
-            'PEER_COUNT': ["(//td[@align='left' and @class='rowfollow' and @valign='top']/b[1])[3]"]
+            'PEER_COUNT': ["(//td[@align='left' and @class='rowfollow' and @valign='top']/b[1])[3]"],
         },
         'et8.org': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
@@ -172,7 +166,8 @@ class SiteConf:
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
         'www.pttime.org': {
-            'FREE': ["//h1[@id='top']/b/font[@class='free']", "//h1[@id='top']/b/font[@class='zeroupzerodown']"],
+            'FREE': ["//h1[@id='top']/b/font[@class='free']",
+                     "//h1[@id='top']/b/font[@class='zeroupzerodown']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
@@ -273,22 +268,21 @@ class SiteConf:
             'HR': ["//b[contains(text(),'H&R:')]"],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        'hdchina.org': {
-            'RENDER': True,
-            'FREE': ["//h2[@id='top']/img[@class='pro_free']"],
-            '2XFREE': ["//h2[@id='top']/img[@class='pro_free2up']"],
-            'HR': [],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
-        },
-        "ccfbits.org": {
+        'hdchina.org': {'RENDER': True,
+                        'FREE': ["//h2[@id='top']/img[@class='pro_free']"],
+                        '2XFREE': ["//h2[@id='top']/img[@class='pro_free2up']"],
+                        'HR': [],
+                        'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+                        },
+        'ccfbits.org': {
             'FREE': ["//font[@color='red'][text()='本种子不计下载量，只计上传量!']"],
             '2XFREE': [],
             'HR': [],
             'PEER_COUNT': [],
         },
         'u2.dmhy.org': {
-            'FREE': ["//img[@class='pro_free']"],
-            '2XFREE': [],
+            'FREE': ["//td[@class='rowfollow']/img[@class='pro_free'][@alt='FREE']"],
+            '2XFREE': ["//td[@class='rowfollow']/img[@class='pro_free2up'][@alt='2X Free']"],
             'HR': [],
             'PEER_COUNT': [],
         },
@@ -334,19 +328,7 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        'hdzone.me': {
-            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
-            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
-            'HR': [],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
-        },
         'hdfun.me': {
-            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
-            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
-            'HR': [],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
-        },
-        'pandapt.net': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
@@ -370,13 +352,12 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        'pt.msg.vg': {
-            'LOGIN': 'user/login/index',
-            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
-            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
-            'HR': [],
-            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
-        },
+        'pt.msg.vg': {'LOGIN': 'user/login/index',
+                      'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+                      '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
+                      'HR': [],
+                      'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+                      },
         'kamept.com': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
@@ -473,36 +454,57 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        "sharkpt.net": {
+        'sharkpt.net': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': ["//h1[@id='top']/img[@class='hitandrun']"],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        "pt.2xfree.org": {
+        'pt.2xfree.org': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        "uploads.ltd": {
+        'uploads.ltd': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        "www.icc2022.com": {
+        'www.icc2022.com': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        "zhuque.in": {
+        'zhuque.in': {
             'RENDER': True,
             'FREE': ["//span[@class='text-download'][contains(text(),'0x')]"],
-            '2XFREE': [""],
+            '2XFREE': [''],
             'HR': [],
             'PEER_COUNT': ["//div[@class='ant-form-item-control-input-content']/span[contains(text(),'正在做种: )]"],
+        },
+        'www.oshen.win': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+            '2XFREE': [],
+            'HR': ["//h1[@id='top']/img[@class='hitandrun']"],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        'cyanbug.net': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+        },
+        'ubits.club': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        'pandapt.net': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         }
     }
 
@@ -511,10 +513,11 @@ class SiteConf:
 
     def init_config(self):
         try:
-            with open(os.path.join(Config().get_inner_config_path(),
-                                   "sites.dat"),
-                      "rb") as f:
-                self._RSS_SITE_GRAP_CONF = pickle.load(f).get("conf")
+            # with open(os.path.join(Config().get_inner_config_path(),
+            #                        "sites.dat"),
+            #           "rb") as f:
+            #     self._RSS_SITE_GRAP_CONF = pickle.load(f).get("conf")
+            pass
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
 
