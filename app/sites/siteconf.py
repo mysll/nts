@@ -340,6 +340,18 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
+        'hdfun.me': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
+        'pandapt.net': {
+            'FREE': ["//h1[@id='top']/b/font[@class='free']"],
+            '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
+            'HR': [],
+            'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
+        },
         'gainbound.net': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
