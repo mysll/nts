@@ -418,8 +418,8 @@ class DouBan:
                     year = overview.split("/")[0].strip()
 
             # 高清海报
-            if poster_path:
-                poster_path = poster_path.replace("s_ratio_poster", "m_ratio_poster")
+            # if poster_path:
+            #     poster_path = poster_path.replace("s_ratio_poster", "m_ratio_poster")
 
             ret_infos.append({
                 'id': "DB:%s" % rid,
