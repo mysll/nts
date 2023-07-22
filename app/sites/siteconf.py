@@ -286,7 +286,7 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': [],
         },
-        'www.hdarea.co': {
+        'www.hdarea.club': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
