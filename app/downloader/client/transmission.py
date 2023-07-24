@@ -452,6 +452,7 @@ class Transmission(_IDownloadClient):
             if kwargs.get("priority") == 0:
                 self.trc.change_torrent(ids=kwargs.get("torrent_hash"),
                                         files_unwanted=kwargs.get("file_ids"))
+                log.debug("unwatch : %d" % len(kwargs.get("file_ids")))
             else:
                 self.trc.change_torrent(ids=kwargs.get("torrent_hash"),
                                         priority_normal=kwargs.get("file_ids"))
