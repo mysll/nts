@@ -442,23 +442,19 @@ class Transmission(_IDownloadClient):
             return None
 
     def set_files(self, **kwargs):
+
         """
-        设置下载文件的状态
-        {
-            <torrent id>: {
-                <file id>: {
-                    'priority': <priority ('high'|'normal'|'low')>,
-                    'selected': <selected for download (True|False)>
-                },
-                ...
-            },
-            ...
-        }
-        """
-        if not kwargs.get("file_info"):
+                设置下载文件的状态，priority为0为不下载，priority为1为下载
+                """
+        if not kwargs.get("torrent_hash") or not kwargs.get("file_ids") or not kwargs.get("priority"):
             return False
         try:
-            self.trc.set_files(kwargs.get("file_info"))
+            if kwargs.get("priority") == 0:
+                self.trc.change_torrent(ids=kwargs.get("torrent_hash"),
+                                        files_unwanted=kwargs.get("file_ids"))
+            else:
+                self.trc.change_torrent(ids=kwargs.get("torrent_hash"),
+                                        priority_normal=kwargs.get("file_ids"))
             return True
         except Exception as err:
             ExceptionUtils.exception_traceback(err)

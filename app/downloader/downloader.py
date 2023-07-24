@@ -1107,16 +1107,13 @@ class Downloader:
         if not torrent_files:
             return
         if downloader_conf.get("type") == "transmission":
-            files_info = {}
+            file_ids = []
             for torrent_file in torrent_files:
                 file_id = torrent_file.get("id")
                 if file_id in no_downloads:
-                    if not files_info.get(tid):
-                        files_info[tid] = {file_id: {'priority': 'normal', 'selected': False}}
-                    else:
-                        files_info[tid][file_id] = {'priority': 'normal', 'selected': False}
-            if files_info:
-                _client.set_files(file_info=files_info)
+                    file_ids.append(file_id)
+            if file_ids:
+                _client.set_files(torrent_hash=tid, file_ids=file_ids, priority=0)
         elif downloader_conf.get("type") == "qbittorrent":
             file_ids = []
             for torrent_file in torrent_files:
