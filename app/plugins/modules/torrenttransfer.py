@@ -528,7 +528,7 @@ class TorrentTransfer(_IPluginModule):
 
                     if ignore_download_files:
                         self.downloader.set_no_download_files(downloader_id=todownloader, tid=download_id,
-                                                              not_download=ignore_download_files)
+                                                              no_downloads=ignore_download_files)
                     # 追加校验任务
                     self.info(f"添加校验检查任务：{download_id} ...")
                     if not self._recheck_torrents.get(todownloader):
