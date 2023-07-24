@@ -1112,6 +1112,8 @@ class Downloader:
                 file_id = torrent_file.get("id")
                 if file_id in no_downloads:
                     file_ids.append(file_id)
+            log.info("no download files: %d" % len(file_ids))
+            log.info(file_ids)
             if file_ids:
                 _client.set_files(torrent_hash=tid, file_ids=file_ids, priority=0)
         elif downloader_conf.get("type") == "qbittorrent":
