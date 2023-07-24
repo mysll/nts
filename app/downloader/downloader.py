@@ -1147,7 +1147,7 @@ class Downloader:
         if not torrent_files:
             return []
         if downloader_conf.get("type") == "transmission":
-            files_info = {}
+            file_ids = []
             for torrent_file in torrent_files:
                 file_id = torrent_file.get("id")
                 file_name = torrent_file.get("name")
@@ -1158,12 +1158,10 @@ class Downloader:
                     selected = set(meta_info.get_episode_list()).issubset(set(need_episodes))
                     if selected:
                         sucess_epidised = list(set(sucess_epidised).union(set(meta_info.get_episode_list())))
-                if not files_info.get(tid):
-                    files_info[tid] = {file_id: {'priority': 'normal', 'selected': selected}}
-                else:
-                    files_info[tid][file_id] = {'priority': 'normal', 'selected': selected}
-            if sucess_epidised and files_info:
-                _client.set_files(file_info=files_info)
+                if not selected:
+                    file_ids.append(file_id)
+            if sucess_epidised and file_ids:
+                _client.set_files(torrent_hash=tid, file_ids=file_ids, priority=0)
         elif downloader_conf.get("type") == "qbittorrent":
             file_ids = []
             for torrent_file in torrent_files:
