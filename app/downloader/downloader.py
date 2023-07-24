@@ -1081,16 +1081,49 @@ class Downloader:
             for file_id, torrent_file in enumerate(torrent_files):
                 ret_files.append({
                     "id": file_id,
-                    "name": torrent_file.name
+                    "name": torrent_file.name,
+                    "download": torrent_file.selected
                 })
         elif _client.get_type() == DownloaderType.QB:
             for torrent_file in torrent_files:
                 ret_files.append({
                     "id": torrent_file.get("index"),
-                    "name": torrent_file.get("name")
+                    "name": torrent_file.get("name"),
+                    "download": torrent_file.get("priority") != 0
                 })
 
         return ret_files
+
+    def set_no_download_files(self, tid, no_downloads, downloader_id=None):
+        # 客户端
+        if not downloader_id:
+            downloader_id = self.default_downloader_id
+        _client = self.__get_client(downloader_id)
+        downloader_conf = self.get_downloader_conf(downloader_id)
+        if not _client:
+            return
+        # 种子文件
+        torrent_files = self.get_files(tid=tid, downloader_id=downloader_id)
+        if not torrent_files:
+            return
+        if downloader_conf.get("type") == "transmission":
+            files_info = {}
+            for torrent_file in torrent_files:
+                file_id = torrent_file.get("id")
+                if file_id in no_downloads:
+                    files_info[tid] = {file_id: {'priority': 'normal', 'selected': False}}
+            if files_info:
+                _client.set_files(file_info=files_info)
+        elif downloader_conf.get("type") == "qbittorrent":
+            file_ids = []
+            for torrent_file in torrent_files:
+                file_id = torrent_file.get("id")
+                if file_id in no_downloads:
+                    file_ids.append(file_id)
+
+            if file_ids:
+                _client.set_files(torrent_hash=tid, file_ids=file_ids, priority=0)
+        return
 
     def set_files_status(self, tid, need_episodes, downloader_id=None):
         """

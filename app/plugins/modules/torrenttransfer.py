@@ -508,6 +508,27 @@ class TorrentTransfer(_IPluginModule):
                     fail += 1
                     continue
                 else:
+                    source_files = self.downloader.get_files(downloader_id=downloader, tid=download_id)
+                    dest_files = self.downloader.get_files(downloader_id=todownloader, tid=download_id)
+                    not_download = {}
+                    ignore_download_files = {}
+                    for torrent_file in source_files:
+                        file_id = torrent_file.get("id")
+                        file_name = torrent_file.get("name")
+                        need_download = torrent_file.get("download")
+                        if need_download:
+                            continue
+                        not_download[file_name] = True
+
+                    for torrent_file in dest_files:
+                        file_id = torrent_file.get("id")
+                        file_name = torrent_file.get("name")
+                        if file_name in not_download:
+                            ignore_download_files[file_id] = True
+
+                    if ignore_download_files:
+                        self.downloader.set_no_download_files(downloader_id=todownloader, tid=download_id,
+                                                              not_download=ignore_download_files)
                     # 追加校验任务
                     self.info(f"添加校验检查任务：{download_id} ...")
                     if not self._recheck_torrents.get(todownloader):
