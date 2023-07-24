@@ -446,7 +446,7 @@ class Transmission(_IDownloadClient):
         """
                 设置下载文件的状态，priority为0为不下载，priority为1为下载
                 """
-        if not kwargs.get("torrent_hash") or not kwargs.get("file_ids") or not kwargs.get("priority"):
+        if not kwargs.get("torrent_hash") or not kwargs.get("file_ids"):
             return False
         try:
             if kwargs.get("priority") == 0:
