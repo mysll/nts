@@ -316,7 +316,7 @@ class SiteConf:
             'HR': [],
             'PEER_COUNT': ["//div[@id='peercount']/b[1]"],
         },
-        'azusa.ru': {
+        'azusa.wiki': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
             '2XFREE': ["//h1[@id='top']/b/font[@class='twoupfree']"],
             'HR': [],
