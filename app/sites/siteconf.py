@@ -481,7 +481,7 @@ class SiteConf:
         'zhuque.in': {
             'RENDER': True,
             'FREE': ["//span[@class='text-download'][contains(text(),'[↓0x]')]"],
-            '2XFREE': [''],
+            '2XFREE': [],
             'HR': [],
             'PEER_COUNT': ["//span[@class='text-upload'][contains(text(),'↑]')]"],
         },
