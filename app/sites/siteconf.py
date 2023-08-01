@@ -480,10 +480,10 @@ class SiteConf:
         },
         'zhuque.in': {
             'RENDER': True,
-            'FREE': ["//span[@class='text-download'][contains(text(),'0x')]"],
+            'FREE': ["//span[@class='text-download'][contains(text(),'[↓0x]')]"],
             '2XFREE': [''],
             'HR': [],
-            'PEER_COUNT': ["//div[@class='ant-form-item-control-input-content']/span[contains(text(),'正在做种: )]"],
+            'PEER_COUNT': ["//span[@class='text-upload'][contains(text(),'↑]')]"],
         },
         'www.oshen.win': {
             'FREE': ["//h1[@id='top']/b/font[@class='free']"],
