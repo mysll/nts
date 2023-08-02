@@ -534,7 +534,7 @@ class SiteConf:
         if not url:
             return self._RSS_SITE_GRAP_CONF
         for k, v in self._RSS_SITE_GRAP_CONF.items():
-            if StringUtils.url_equal(k, url):
+            if StringUtils.site_equal(k, url):
                 return v
         return {}
 

@@ -219,6 +219,20 @@ class StringUtils:
         return False
 
     @staticmethod
+    def site_equal(url1, url2):
+        """
+        比较两个站点是否为同一个网站
+        """
+        if not url1 or not url2:
+            return False
+
+        site1 = StringUtils.get_url_sld(url1)
+        site2 = StringUtils.get_url_sld(url2)
+        if site1 == site2:
+            return True
+        return False
+
+    @staticmethod
     def get_url_netloc(url):
         """
         获取URL的协议和域名部分

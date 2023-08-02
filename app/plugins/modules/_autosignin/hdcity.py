@@ -22,7 +22,7 @@ class HDCity(_ISiteSigninHandler):
         :param url: 站点Url
         :return: 是否匹配，如匹配则会调用该类的signin方法
         """
-        return True if StringUtils.url_equal(url, cls.site_url) else False
+        return True if StringUtils.site_equal(url, cls.site_url) else False
 
     def signin(self, site_info: dict):
         """
