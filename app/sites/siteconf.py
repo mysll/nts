@@ -81,9 +81,7 @@ class SiteConf:
 
     def init_config(self):
         try:
-            with open(os.path.join(Config().get_inner_config_path(),
-                                   "sites.json"),
-                      "rb") as f:
+            with open(os.path.join(Config().get_inner_config_path(), "sites.json"), "r", encoding="utf-8") as f:
                 self._RSS_SITE_GRAP_CONF = json.load(f).get("conf")
         except Exception as err:
             ExceptionUtils.exception_traceback(err)

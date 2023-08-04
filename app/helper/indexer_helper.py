@@ -15,9 +15,7 @@ class IndexerHelper:
 
     def init_config(self):
         try:
-            with open(os.path.join(Config().get_inner_config_path(),
-                                   "sites.json"),
-                      "rb") as f:
+            with open(os.path.join(Config().get_inner_config_path(), "sites.json"), "r", encoding="utf-8") as f:
                 self._indexers = json.load(f).get("indexer")
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
