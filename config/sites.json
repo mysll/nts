@@ -965,7 +965,7 @@
     {
       "id": "azusa",
       "name": "\u6893\u55b5",
-      "domain": "https://azusa.ru/",
+      "domain": "https://azusa.wiki/",
       "encoding": "UTF-8",
       "public": false,
       "search": {
@@ -12706,7 +12706,7 @@
     {
       "id": "HDarea",
       "name": "\u9ad8\u6e05\u89c6\u754c",
-      "domain": "https://www.hdarea.co/",
+      "domain": "https://hdarea.club/",
       "encoding": "UTF-8",
       "public": false,
       "search": {
@@ -14315,7 +14315,7 @@
       "HR": [],
       "PEER_COUNT": []
     },
-    "www.hdarea.co": {
+    "hdarea.club": {
       "FREE": [
         "//h1[@id='top']/b/font[@class='free']"
       ],
@@ -14373,7 +14373,7 @@
         "//div[@id='peercount']/b[1]"
       ]
     },
-    "azusa.ru": {
+    "azusa.wiki": {
       "FREE": [
         "//h1[@id='top']/b/font[@class='free']"
       ],
