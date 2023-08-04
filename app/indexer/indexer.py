@@ -50,6 +50,9 @@ class Indexer(object):
             return []
         return self._client.get_indexers(check=check)
 
+    def get_builtin_indexers(self, check=True, public=True, indexer_id=None):
+        return self.__get_client('builtin').get_indexers(check=check, indexer_id=indexer_id, public=public)
+
     def get_user_indexer_dict(self):
         """
         获取用户已经选择的索引器字典

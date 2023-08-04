@@ -916,8 +916,7 @@ def download_setting():
 @App.route('/indexer', methods=['POST', 'GET'])
 @login_required
 def indexer():
-    # 只有选中的索引器才搜索
-    indexers = Indexer().get_indexers(check=False)
+    indexers = Indexer().get_builtin_indexers(check=False)
     private_count = len([item.id for item in indexers if not item.public])
     public_count = len([item.id for item in indexers if item.public])
     indexer_sites = SystemConfig().get(SystemConfigKey.UserIndexerSites)
