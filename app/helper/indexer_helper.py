@@ -1,5 +1,5 @@
 import os.path
-import pickle
+import json
 
 from app.utils import StringUtils, ExceptionUtils
 from app.utils.commons import singleton
@@ -16,9 +16,9 @@ class IndexerHelper:
     def init_config(self):
         try:
             with open(os.path.join(Config().get_inner_config_path(),
-                                   "sites.dat"),
+                                   "sites.json"),
                       "rb") as f:
-                self._indexers = pickle.load(f).get("indexer")
+                self._indexers = json.load(f).get("indexer")
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
 
@@ -51,7 +51,7 @@ class IndexerHelper:
         for indexer in self._indexers:
             if not indexer.get("domain"):
                 continue
-            if StringUtils.url_equal(indexer.get("domain"), url):
+            if StringUtils.site_equal(indexer.get("domain"), url):
                 return IndexerConf(datas=indexer,
                                    siteid=siteid,
                                    cookie=cookie,
