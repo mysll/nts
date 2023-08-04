@@ -29,7 +29,7 @@ class IndexerHelper:
         for indexer in self._indexers:
             if not public and indexer.get("public"):
                 continue
-            if StringUtils.url_equal(indexer.get("domain"), url):
+            if StringUtils.site_equal(indexer.get("domain"), url):
                 return indexer
         return None
 
