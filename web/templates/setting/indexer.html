@@ -213,6 +213,9 @@
       params['pt.search_indexer'] = type;
       ajax_post("update_config", params, func);
     } else {
+      let config = {}
+      config['pt.search_indexer'] = "builtin";
+      ajax_post("update_config", config, function(ret){});
       let sites = select_GetSelectedVAL("^indexer_sites");
       let params = {
         key: "UserIndexerSites",
