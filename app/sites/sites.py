@@ -171,11 +171,7 @@ class Sites:
         根据url的后缀获取站点配置
         """
         for key in self._siteByUrls:
-            # 使用.分割后再将最后两位(顶级域和二级域)拼起来
-            key_parts = key.split(".")
-            key_end = ".".join(key_parts[-2:])
-            # 将拼起来的结果与参数进行对比
-            if suffix == key_end:
+            if StringUtils.site_equal(key, suffix):
                 return self._siteByUrls[key]
         return {}
 
