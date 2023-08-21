@@ -4450,11 +4450,11 @@
             "selector": "div > a.torrents-tag"
           },
           "subject": {
-            "selector": "td.embedded:nth-child(2) > div > div:nth-child(2) > span",
+            "selector": "div:nth-child(2) > div > div:nth-child(2) > div",
             "contents": -1
           },
           "description": {
-            "selector": "td:nth-child(2) > table.torrentname > tr > td:nth-child(1)",
+            "selector": "div:nth-child(2) > div > div:nth-child(2) > div",
             "remove": "span,a,img,font,b",
             "contents": -1
           },
