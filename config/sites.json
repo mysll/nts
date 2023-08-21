@@ -4418,19 +4418,12 @@
           },
           "downloadvolumefactor": {
             "case": {
-              "img.pro_free": 0,
-              "img.pro_free2up": 0,
-              "img.pro_50pctdown": 0.5,
-              "img.pro_50pctdown2up": 0.5,
-              "img.pro_30pctdown": 0.3,
+              "span.promotion-tag-free": 0,
               "*": 1
             }
           },
           "uploadvolumefactor": {
             "case": {
-              "img.pro_50pctdown2up": 2,
-              "img.pro_free2up": 2,
-              "img.pro_2up": 2,
               "*": 1
             }
           },
