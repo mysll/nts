@@ -4337,7 +4337,7 @@
       },
       "torrents": {
         "list": {
-          "selector": "table.torrents > tr:has(\"table.torrentname\")"
+          "selector": "#mainContent > div > div:nth-child(2) > div:nth-child(4) > div"
         },
         "fields": {
           "id": {
@@ -4387,23 +4387,23 @@
             "attribute": "href"
           },
           "size": {
-            "selector": "td.rowfollow:nth-child(5)"
+            "selector": "div.torrent-info > div:nth-child(1)"
           },
           "grabs": {
-            "selector": "td.rowfollow:nth-child(8)"
+            "selector": "div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div"
           },
           "seeders": {
-            "selector": "td.rowfollow:nth-child(6)"
+            "selector": "div.torrent-info > div:nth-child(3)"
           },
           "leechers": {
-            "selector": "td.rowfollow:nth-child(7)"
+            "selector": "div.torrent-info > div:nth-child(4)"
           },
           "date_elapsed": {
-            "selector": "td.rowfollow:nth-child(4) > span",
+            "selector": "div.torrent-info > div:nth-child(2) > span",
             "optional": true
           },
           "date_added": {
-            "selector": "td.rowfollow:nth-child(4) > span",
+            "selector": "div.torrent-info > div:nth-child(2) > span",
             "attribute": "title",
             "optional": true
           },
@@ -14594,14 +14594,14 @@
     },
     "hhanclub.top": {
       "FREE": [
-        "//h1[@id='top']/b/font[@class='free']"
+        "//*[@id='mainContent']/div/div/div[1]/div[2]/div[1]/div/span"
       ],
       "2XFREE": [],
       "HR": [
         "//h1[@id='top']/img[@class='hitandrun']"
       ],
       "PEER_COUNT": [
-        "//div[@id='peercount']/b[1]"
+        "//*[@id='seeder-count']"
       ]
     },
     "zmpt.cc": {
