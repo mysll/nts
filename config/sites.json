@@ -4337,7 +4337,7 @@
       },
       "torrents": {
         "list": {
-          "selector": "#mainContent > div > div.z-10.m-auto.m-auto.\\!rounded-md > div.flex.flex-col.m-auto > div"
+          "selector": ".torrents-table div.flex.flex-col.m-auto > div"
         },
         "fields": {
           "id": {
@@ -4440,7 +4440,7 @@
             ]
           },
           "tags": {
-            "selector": "div > a.torrents-tag"
+            "selector": "span.tag"
           },
           "subject": {
             "selector": "div:nth-child(2) > div > div:nth-child(2) > div",

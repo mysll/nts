@@ -100,7 +100,7 @@ class Sites:
             # 以ID存储
             self._siteByIds[site.ID] = site_info
             # 以域名存储
-            site_strict_url = StringUtils.get_url_domain(site.SIGNURL or site.RSSURL)
+            site_strict_url = StringUtils.get_url_sld(site.SIGNURL or site.RSSURL)
             if site_strict_url:
                 self._siteByUrls[site_strict_url] = site_info
             # 初始化站点限速器
@@ -136,7 +136,7 @@ class Sites:
         if siteid:
             return self._siteByIds.get(int(siteid)) or {}
         if siteurl:
-            return self._siteByUrls.get(StringUtils.get_url_domain(siteurl)) or {}
+            return self._siteByUrls.get(StringUtils.get_url_sld(siteurl)) or {}
 
         ret_sites = []
         for site in self._siteByIds.values():
