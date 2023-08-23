@@ -14591,7 +14591,7 @@
       ],
       "2XFREE": [],
       "HR": [
-        "//h1[@id='top']/img[@class='hitandrun']"
+        "//*[@id='mainContent']/div/div/div[1]/div[2]/div[1]/span"
       ],
       "PEER_COUNT": [
         "//*[@id='seeder-count']"
