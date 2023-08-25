@@ -4337,7 +4337,7 @@
       },
       "torrents": {
         "list": {
-          "selector": ".torrents-table div.flex.flex-col.m-auto > div"
+          "selector": ".torrent-table-for-spider .torrent-table-sub-info"
         },
         "fields": {
           "id": {
@@ -4387,19 +4387,19 @@
             "attribute": "href"
           },
           "size": {
-            "selector": "div.torrent-info > div:nth-child(1)"
+            "selector": ".torrent-info-text-size"
           },
           "grabs": {
-            "selector": "div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div"
+            "selector": ".torrent-info-text-author > div"
           },
           "seeders": {
-            "selector": "div.torrent-info > div:nth-child(3)"
+            "selector": ".torrent-info-text-seeders"
           },
           "leechers": {
-            "selector": "div.torrent-info > div:nth-child(4)"
+            "selector": ".torrent-info-text-leechers"
           },
           "date_elapsed": {
-            "selector": "div.torrent-info > div:nth-child(2) > span",
+            "selector": ".torrent-info-text-added > span",
             "optional": true
           },
           "date_added": {
@@ -4443,16 +4443,16 @@
             "selector": "span.tag"
           },
           "subject": {
-            "selector": "div:nth-child(2) > div > div:nth-child(2) > div",
+            "selector": ".torrent-info-text-small_name",
             "contents": -1
           },
           "description": {
-            "selector": "div:nth-child(2) > div > div:nth-child(2) > div",
+            "selector": ".torrent-info-text-small_name",
             "remove": "span,a,img,font,b",
             "contents": -1
           },
           "labels": {
-            "selector": "td:nth-child(2) > table.torrentname > tr > td:nth-child(1) > span"
+            "selector": "span.tag"
           }
         }
       }
@@ -14587,11 +14587,11 @@
     },
     "hhanclub.top": {
       "FREE": [
-        "//*[@id='mainContent']/div/div/div[1]/div[2]/div[1]/div/span"
+        "//span[contains(@class, 'promotion-tag-free')]"
       ],
       "2XFREE": [],
       "HR": [
-        "//*[@id='mainContent']/div/div/div[1]/div[2]/div[1]/span"
+        "//span[text()='H&R']"
       ],
       "PEER_COUNT": [
         "//*[@id='seeder-count']"
