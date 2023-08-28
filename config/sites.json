@@ -14308,12 +14308,12 @@
       "HR": [],
       "PEER_COUNT": []
     },
-    "www.hdarea.co": {
+    "hdarea.club": {
       "FREE": [
         "//h1[@id='top']/b/font[@class='free']"
       ],
       "2XFREE": [
-        "//h1[@id='top']/b/font[@class='twoupfree']"
+        "//h1[@id='top']/b/font[@class='twoup']"
       ],
       "HR": [],
       "PEER_COUNT": [
