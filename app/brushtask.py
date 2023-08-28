@@ -434,7 +434,9 @@ class BrushTask(object):
                     # 总下载量
                     total_downloaded += torrent_info.get("downloaded")
                     # 分享率 上传量 / 种子大小
-                    ratio = float(torrent_info.get("uploaded")) / float(torrent_info.get("total_size"))
+                    # 下载中的不判断分享率,有些站点不支持跳车
+                    # ratio = float(torrent_info.get("uploaded")) / float(torrent_info.get("total_size"))
+                    ratio = 0
                     # 种子名称
                     torrent_name = torrent.get('name')
                     # 下载器名称
