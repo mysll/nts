@@ -99,6 +99,10 @@
                    title="查看种子明细">
                   {{ SVG.eye() }}
                 </a>
+                <a href="javascript:clear_brushtask_now('{{ Task.id }}')" class="btn-action"
+                   title="清空任务">
+                  {{ SVG.refresh_dot() }}
+                </a>
                 <a href="javascript:edit_brushtask_modal('{{ Task.id }}')" class="btn-action"
                   title="编辑任务">
                   {{ SVG.edit() }}
@@ -1129,7 +1133,7 @@
 
   function clear_brushtask_now(id) {
       ajax_post("clear_brushtask", {"id": id}, function (ret) {
-      show_success_modal("清空下载任务！", function () {
+      show_success_modal("清空下载任务完成！", function () {
         window_history_refresh();
       });
     });
