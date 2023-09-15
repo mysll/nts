@@ -77,6 +77,9 @@
                 <button class="dropdown-item text-info" onclick="run_brushtask_now('{{ Task.id }}')">
                   立即运行
                 </button>
+                <button class="dropdown-item text-info" onclick="clear_brushtask_now('{{ Task.id }}')">
+                   清空任务
+                </button>
                 <button class="dropdown-item" onclick="show_brushtask_torrents_modal('{{ Task.id }}')">
                   预览
                 </button>
@@ -1119,6 +1122,14 @@
   function run_brushtask_now(id) {
     ajax_post("run_brushtask", {"id": id}, function (ret) {
       show_success_modal("任务运行完成！", function () {
+        window_history_refresh();
+      });
+    });
+  }
+
+  function clear_brushtask_now(id) {
+      ajax_post("clear_brushtask", {"id": id}, function (ret) {
+      show_success_modal("清空下载任务！", function () {
         window_history_refresh();
       });
     });

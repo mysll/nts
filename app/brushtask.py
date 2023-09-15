@@ -530,6 +530,119 @@ class BrushTask(object):
             except Exception as e:
                 ExceptionUtils.exception_traceback(e)
 
+    def clear_tasks_torrents(self, taskid):
+        """
+        清空任务
+        """
+        if not taskid:
+            return
+        # 任务信息
+        taskinfo = self.get_brushtask_info(taskid)
+        if not taskinfo:
+            return
+
+        try:
+            # 总上传量
+            total_uploaded = 0
+            # 总下载量
+            total_downloaded = 0
+            # 可以删种的种子
+            delete_ids = []
+            # 需要更新状态的种子
+            update_torrents = []
+
+            # 任务信息
+            task_name = taskinfo.get("name")
+            downloader_id = taskinfo.get("downloader")
+
+            # 当前任务种子详情
+            task_torrents = self.get_brushtask_torrents(taskid)
+            torrent_ids = [item.DOWNLOAD_ID for item in task_torrents if item.DOWNLOAD_ID]
+            # 避免种子被全删，没有种子ID的不处理
+            if not torrent_ids:
+                return
+            # 下载器参数
+            downloader_cfg = self.downloader.get_downloader_conf(downloader_id)
+            if not downloader_cfg:
+                log.warn("【Brush】任务 %s 下载器不存在" % task_name)
+                # 下载器不存在,直接清理所有种子
+                for remove_torrent_id in torrent_ids:
+                    self.dbhelper.delete_brushtask_torrent(taskid, remove_torrent_id)
+                return
+            # 下载器的类型
+            downloader_type = downloader_cfg.get("type")
+            # 查询下载器中的所有种子
+            torrents = self.downloader.get_torrents(downloader_id=downloader_id,
+                                                    ids=torrent_ids)
+            for torrent in torrents:
+                torrent_info = self.__get_torrent_dict(downloader_type=downloader_type,
+                                                       torrent=torrent)
+                # ID
+                torrent_id = torrent_info.get("id")
+                # 上传量
+                uploaded = torrent_info.get("uploaded")
+                # 下载量
+                downloaded = torrent_info.get("downloaded")
+                # 总上传量
+                total_uploaded += uploaded
+                # 总下载量
+                total_downloaded += downloaded
+
+                delete_ids.append(torrent_id)
+                update_torrents.append(("%s,%s" % (uploaded, downloaded),
+                                        taskid,
+                                        torrent_id))
+
+            # 更新手动从下载器删除的种子列表
+            remove_torrent_ids = list(
+                set(torrent_ids).difference(
+                    set([(torrent.get("hash")
+                          if downloader_type == 'qbittorrent'
+                          else str(torrent.hashString)) for torrent in torrents])))
+
+            # 手工删除的种子，清除对应记录
+            if remove_torrent_ids:
+                log.info("【Brush】任务 %s 的这些下载任务在下载器中不存在，将删除任务记录：%s" % (
+                    task_name, remove_torrent_ids))
+                for remove_torrent_id in remove_torrent_ids:
+                    self.dbhelper.delete_brushtask_torrent(taskid, remove_torrent_id)
+
+            # 删除下载器种子
+            if delete_ids:
+                self.downloader.delete_torrents(downloader_id=downloader_id,
+                                                ids=delete_ids,
+                                                delete_file=True)
+                # 检验下载器中种子是否已经删除
+                time.sleep(5)
+                torrents = self.downloader.get_torrents(downloader_id=downloader_id, ids=delete_ids)
+                if torrents is None:
+                    delete_ids = []
+                    update_torrents = []
+                else:
+                    for torrent in torrents:
+                        torrent_info = self.__get_torrent_dict(downloader_type=downloader_type,
+                                                               torrent=torrent)
+                        # ID
+                        torrent_id = torrent_info.get("id")
+                        # 依然存在下载器的种子移出删除列表
+                        if torrent_id in delete_ids:
+                            delete_ids.remove(torrent_id)
+                if delete_ids:
+                    # 更新种子状态为已删除
+                    update_torrents = [update_torrent for update_torrent in update_torrents
+                                       if update_torrent[2] in delete_ids]
+                    self.dbhelper.update_brushtask_torrent_state(update_torrents)
+                    log.info("【Brush】任务 %s 共删除 %s 个刷流下载任务" % (task_name, len(delete_ids)))
+                else:
+                    log.info("【Brush】任务 %s 本次检查未删除下载任务" % task_name)
+            # 更新上传下载量和删除种子数
+            self.dbhelper.add_brushtask_upload_count(brush_id=taskid,
+                                                     upload_size=total_uploaded,
+                                                     download_size=total_downloaded,
+                                                     remove_count=len(delete_ids) + len(remove_torrent_ids))
+        except Exception as e:
+            ExceptionUtils.exception_traceback(e)
+
     def __is_allow_new_torrent(self, taskinfo, dlcount, torrent_size=None):
         """
         检查是否还能添加新的下载

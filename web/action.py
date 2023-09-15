@@ -196,6 +196,7 @@ class WebAction:
             "get_remove_torrents": self.__get_remove_torrents,
             "auto_remove_torrents": self.__auto_remove_torrents,
             "list_brushtask_torrents": self.__list_brushtask_torrents,
+            "clear_brushtask": self.__clear_brushtask,
             "set_system_config": self.__set_system_config,
             "get_site_user_statistics": self.get_site_user_statistics,
             "send_plugin_message": self.send_plugin_message,
@@ -4428,6 +4429,14 @@ class WebAction:
         return {"code": 0, "data": [item.as_dict() for item in results]}
 
     @staticmethod
+    def __clear_brushtask(data):
+        """
+        清空刷流任务
+        """
+        BrushTask().clear_tasks_torrents(data.get("id"))
+        return {"code": 0}
+
+    @staticmethod
     def __set_system_config(data):
         """
         设置系统设置（数据库）
@@ -4993,6 +5002,24 @@ class WebAction:
                 ]
             }
         ]
+
+        # audio_tools = SystemConfig().get("plugin.%s" % "AudioTools")
+        # if audio_tools and audio_tools.get("enable"):
+        #     menus.insert(1, {
+        #         'name': '我的播客',
+        #         'level': 1,
+        #         'page': 'podcast',
+        #         'icon': '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="5 12 3 12 12 3 21 12 19 12"></polyline><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path></svg>\n                    '
+        #     })
+        #
+        # menus.insert(
+        #     2, {
+        #         'name': '我的漫画',
+        #         'level': 1,
+        #         'page': 'comic',
+        #         'icon': '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><polyline points="5 12 3 12 12 3 21 12 19 12"></polyline><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path></svg>\n                    '
+        #     }
+        # )
         return {
             "code": 0,
             "menus": menus,
