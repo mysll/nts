@@ -1132,11 +1132,14 @@
   }
 
   function clear_brushtask_now(id) {
-      ajax_post("clear_brushtask", {"id": id}, function (ret) {
-      show_success_modal("清空下载任务完成！", function () {
-        window_history_refresh();
+      show_confirm_modal("清空刷流任务 " + name + " ？", function () {
+          hide_confirm_modal();
+          ajax_post("clear_brushtask", {"id": id}, function (ret) {
+            show_success_modal("清空下载任务完成！", function () {
+                window_history_refresh();
+            });
+          });
       });
-    });
   }
 
   // 刷流种子下载记录
