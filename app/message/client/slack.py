@@ -270,7 +270,7 @@ class Slack(_IMessageClient):
                                             "text": "选择",
                                             "emoji": True
                                         },
-                                        "value": f"download_{index}",
+                                        "value": f"{index}",
                                         "action_id": f"downloadId-{index}"
                                     }
                                 ]

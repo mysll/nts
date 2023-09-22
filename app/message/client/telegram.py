@@ -6,7 +6,7 @@ import requests
 import log
 from app.helper import ThreadHelper
 from app.message.client._base import _IMessageClient
-from app.utils import RequestUtils, ExceptionUtils
+from app.utils import RequestUtils, ExceptionUtils, StringUtils
 from config import Config
 
 lock = Lock()
@@ -122,7 +122,7 @@ class Telegram(_IMessageClient):
             ExceptionUtils.exception_traceback(msg_e)
             return False, str(msg_e)
 
-    def send_list_msg(self, medias: list, user_id="", title="", **kwargs):
+    def send_list_msg(self, medias: list, user_id="", title="", download=False, **kwargs):
         """
         发送列表类消息
         """
@@ -135,19 +135,31 @@ class Telegram(_IMessageClient):
             for media in medias:
                 if not image:
                     image = media.get_message_image()
-                if media.get_vote_string():
-                    caption = "%s\n%s. [%s](%s)\n%s，%s" % (caption,
-                                                           index,
-                                                           media.get_title_string(),
-                                                           media.get_detail_url(),
-                                                           media.get_type_string(),
-                                                           media.get_vote_string())
+                if not download:
+                    if media.get_vote_string():
+                        caption = "%s\n%s. [%s](%s)\n%s，%s" % (caption,
+                                                               index,
+                                                               media.get_title_string(),
+                                                               media.get_detail_url(),
+                                                               media.get_type_string(),
+                                                               media.get_vote_string())
+                    else:
+                        caption = "%s\n%s. [%s](%s)\n%s" % (caption,
+                                                            index,
+                                                            media.get_title_string(),
+                                                            media.get_detail_url(),
+                                                            media.get_type_string())
                 else:
-                    caption = "%s\n%s. [%s](%s)\n%s" % (caption,
-                                                        index,
-                                                        media.get_title_string(),
-                                                        media.get_detail_url(),
-                                                        media.get_type_string())
+                    text = f"{index}. *{media.org_string}*" \
+                           f"\n站点：{media.site}" \
+                           f"\n编码：{media.video_encode}" \
+                           f"\n大小： {StringUtils.str_filesize(int(media.size))}" \
+                           f"\n格式： {media.resource_type}" \
+                           f"\n促销： *{'免费' if media.download_volume_factor == 0.0 else '普通'}*" \
+                           f"\n做种： {media.seeders}↑"
+
+                    caption = "%s\n%s" % (caption, text)
+
                 index += 1
 
             if user_id:
@@ -165,6 +177,7 @@ class Telegram(_IMessageClient):
         """
         向Telegram发送报文
         """
+
         def _res_parse(result):
             if result and result.status_code == 200:
                 ret_json = result.json()
