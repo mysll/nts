@@ -27,7 +27,7 @@ class SiteHelper:
         # 是否存在登出和用户面板等链接
         xpaths = ['//a[contains(@href, "logout")'
                   ' or contains(@data-url, "logout")'
-                  ' or contains(@href, "mybonus") '
+                  ' or contains(@href, "mybonus")'
                   ' or contains(@onclick, "logout")'
                   ' or contains(@href, "usercp")]',
                   '//form[contains(@action, "logout")]']
