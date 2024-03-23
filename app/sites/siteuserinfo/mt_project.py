@@ -17,7 +17,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
 
     @classmethod
     def match(cls, html_text):
-        return 'Powered by mTorrent' in html_text
+        return 'M-Team' in html_text
 
     def parse(self):
         self._parse_favicon(self._index_html)
