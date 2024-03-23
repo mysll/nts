@@ -33,25 +33,23 @@ class MTeam(_ISiteSigninHandler):
         site = site_info.get("name")
         site_cookie = site_info.get("cookie")
 
-        if self._site_cookie == "":
+        if site_cookie == "":
             self.error(f"签到失败，cookie 为空")
             return False, f'【{site}】签到失败，cookie 为空'
 
-        cookie_dic = RequestUtils.cookie_parse(self._site_cookie)
+        cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
             self.error(f"签到失败，cookie 格式错误,token=xx;user_id=yy")
             return False, f'【{site}】签到失败，cookie 格式错误,token=xx;user_id=yy'
 
-        self._site_cookie = cookie_dic["token"]
-        self.userid = cookie_dic["user_id"]
+        site_cookie = cookie_dic["token"]
 
-        
         proxy = Config().get_proxies() if site_info.get("proxy") else None
 
         req_headers = {}
         req_headers.update({
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "x-api-key": f"{self._site_cookie}"
+                    "x-api-key": f"{site_cookie}"
                 })
 
         res = RequestUtils(headers=req_headers,

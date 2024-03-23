@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from urllib.parse import urljoin
 
 import log
 from app.helper import ChromeHelper, SiteHelper, DbHelper
@@ -245,6 +246,36 @@ class Sites:
                     return site.get("download_setting")
         return None
 
+    def test_mteam(self, site_info):
+        start_time = datetime.now()
+        site_cookie = site_info.get("cookie")
+
+        cookie_dic = RequestUtils.cookie_parse(site_cookie)
+        if "token" not in cookie_dic or "user_id" not in cookie_dic:
+            return False, f'cookie 格式错误,token=xx;user_id=yy',0
+
+        token = cookie_dic["token"]
+
+        proxy = Config().get_proxies() if site_info.get("proxy") else None
+
+        req_headers = {}
+        req_headers.update({
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    "x-api-key": f"{token}"
+                })
+
+        res = RequestUtils(headers=req_headers,
+                                proxies=proxy
+                                ).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
+        
+        seconds = int((datetime.now() - start_time).microseconds / 1000)
+
+        if res is not None and res.status_code == 200:
+            ret = json.load(res)
+            if ret.get("message") == "SUCCESS":
+                return True, "连接成功", seconds
+        return False, '连接失败', seconds
+
     def test_connection(self, site_id):
         """
         测试站点连通性
@@ -262,7 +293,9 @@ class Sites:
         if not site_url:
             return False, "未配置站点地址", 0
 
-            
+        if 'm-team' in site_url:
+            return self.test_mteam(site_info)
+
         # 站点特殊处理...
         if '1ptba' in site_url:
             site_url = site_url + '/index.php'
