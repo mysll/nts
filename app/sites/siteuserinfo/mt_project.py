@@ -24,7 +24,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         if not self._parse_logged_in(""):
             return
         self._parse_site_page("")
-        self._parse_user_base_info(self._get_page_content(urljoin(self._base_url, self._user_detail_page)))
+        self._parse_user_base_info(self._get_page_content(urljoin(self._base_url, self._user_detail_page), params={"uid":self.userid}))
 
         
     def _parse_site_page(self, html_text):
