@@ -252,7 +252,7 @@ class Sites:
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            return False, f'cookie 格式错误,token=xx;user_id=yy', 0
+            return False, f'cookie 格式错误,cookie;token=xx;user_id=yy', 0
 
         token = cookie_dic["token"]
 

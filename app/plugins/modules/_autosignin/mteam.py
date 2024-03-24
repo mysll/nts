@@ -39,8 +39,8 @@ class MTeam(_ISiteSigninHandler):
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            self.error(f"签到失败，cookie 格式错误,token=xx;user_id=yy")
-            return False, f'【{site}】签到失败，cookie 格式错误,token=xx;user_id=yy'
+            self.error(f"签到失败，cookie 格式错误,cookie;token=xx;user_id=yy")
+            return False, f'【{site}】签到失败，cookie 格式错误,cookie;token=xx;user_id=yy'
 
         site_token = cookie_dic["token"]
 
