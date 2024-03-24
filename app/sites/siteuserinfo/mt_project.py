@@ -26,7 +26,6 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         self._parse_site_page("")
         self._parse_user_base_info(self._get_page_content(urljoin(self._base_url, self._user_detail_page), params={"uid":self.userid}))
 
-        
     def _parse_site_page(self, html_text):
         self._user_detail_page = "api/member/profile"
         self._torrent_seeding_page = "api/member/getUserTorrentList"
@@ -41,12 +40,12 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
             log.warn(f"【Sites】{self.site_name} token or user_id is null")
             return False
 
-        self._site_cookie = cookie_dic["token"]
+        self._token = cookie_dic["token"]
         self.userid = cookie_dic["user_id"]
         return True
 
     def _parse_user_base_info(self, html_text):
-        user = json.load(html_text) or {}
+        user = json.loads(html_text) or {}
         if user.get("message") != "SUCCESS":
             return
 
@@ -58,9 +57,11 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         self.ratio = member_count.get("shareRate")
         self.bonus = member_count.get("bonus")
 
+    def _parse_user_traffic_info(self, html_text):
+        pass
 
     def _parse_user_detail_info(self, html_text):
-        pass
+        return None
 
     def _parse_message_unread_links(self, html_text, msg_links):
         return None
@@ -76,14 +77,14 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         :return: 下页地址
         """
         # {"userid":"300094","type":"SEEDING","pageNumber":1,"pageSize":20}
-        pass
+        return None
 
     def _get_page_content(self, url, params=None, headers=None):
         #x-api-key
         req_headers = {}
         req_headers.update({
                     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "x-api-key": f"{self._site_cookie}"
+                    "x-api-key": f"{self._token}"
                 })
         proxies = Config().get_proxies() if self._proxy else None
         if headers or self._addition_headers:
@@ -94,7 +95,8 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                 req_headers.update(self._addition_headers)
 
         if params:
-            res = RequestUtils(session=self._session,
+            res = RequestUtils(cookies=self._site_cookie,
+                               session=self._session,
                                timeout=60,
                                proxies=proxies,
                                headers=req_headers).post_res(url=url, data=params)

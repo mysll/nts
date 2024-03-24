@@ -89,6 +89,7 @@ class _ISiteUserInfo(metaclass=ABCMeta):
         self._index_html = index_html
         self._session = session if session else requests.Session()
         self._ua = ua
+        self._token = ""
 
         self._emulate = emulate
         self._proxy = proxy

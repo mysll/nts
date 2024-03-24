@@ -252,7 +252,7 @@ class Sites:
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            return False, f'cookie 格式错误,token=xx;user_id=yy',0
+            return False, f'cookie 格式错误,token=xx;user_id=yy', 0
 
         token = cookie_dic["token"]
 
@@ -260,18 +260,19 @@ class Sites:
 
         req_headers = {}
         req_headers.update({
-                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "x-api-key": f"{token}"
-                })
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "x-api-key": f"{token}"
+        })
 
-        res = RequestUtils(headers=req_headers,
-                                proxies=proxy
-                                ).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
-        
+        res = RequestUtils(cookies=site_cookie,
+                           headers=req_headers,
+                           proxies=proxy
+                           ).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
+
         seconds = int((datetime.now() - start_time).microseconds / 1000)
 
         if res is not None and res.status_code == 200:
-            ret = json.load(res)
+            ret = json.loads(res.text)
             if ret.get("message") == "SUCCESS":
                 return True, "连接成功", seconds
         return False, '连接失败', seconds

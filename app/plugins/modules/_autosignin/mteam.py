@@ -42,22 +42,22 @@ class MTeam(_ISiteSigninHandler):
             self.error(f"签到失败，cookie 格式错误,token=xx;user_id=yy")
             return False, f'【{site}】签到失败，cookie 格式错误,token=xx;user_id=yy'
 
-        site_cookie = cookie_dic["token"]
+        site_token = cookie_dic["token"]
 
         proxy = Config().get_proxies() if site_info.get("proxy") else None
 
         req_headers = {}
         req_headers.update({
-                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "x-api-key": f"{site_cookie}"
-                })
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "x-api-key": f"{site_token}"
+        })
 
-        res = RequestUtils(headers=req_headers,
-                                proxies=proxy
-                                ).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
-        
+        res = RequestUtils(cookies=site_cookie,
+                           headers=req_headers,
+                           proxies=proxy).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
+
         if res is not None and res.status_code == 200:
-            ret = json.load(res)
+            ret = json.loads(res.text)
             if ret.get("message") == "SUCCESS":
                 return True, f'【{site}】签到成功'
         return False, f'【{site}】签到失败'
