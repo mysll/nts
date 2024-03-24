@@ -24,12 +24,33 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         if not self._parse_logged_in(""):
             return
         self._parse_site_page("")
-        self._parse_user_base_info(self._get_page_content(urljoin(self._base_url, self._user_detail_page), params={"uid":self.userid}))
+        self._parse_user_base_info(
+            self._get_page_content(urljoin(self._base_url, self._user_detail_page), params={"uid": self.userid}))
+        self._parse_seeding_pages()
+        self.seeding_info = json.dumps(self.seeding_info)
 
     def _parse_site_page(self, html_text):
         self._user_detail_page = "api/member/profile"
         self._torrent_seeding_page = "api/member/getUserTorrentList"
-        
+
+    def _parse_seeding_pages(self):
+        header = {"Content-Type": "application/json; charset=UTF-8"}
+        req = {"userid": self.userid, "type": "SEEDING", "pageSize": 100, "pageNumber": 1}
+
+        # 第一页
+        next_page = self._parse_user_torrent_seeding_info(
+            self._get_page_content(urljoin(self._base_url, self._torrent_seeding_page),
+                                   params=json.dumps(req),
+                                   headers=header))
+
+        while next_page:
+            req["pageNumber"] = next_page
+            next_page = self._parse_user_torrent_seeding_info(
+                self._get_page_content(urljoin(urljoin(self._base_url, self._torrent_seeding_page), next_page),
+                                       self._torrent_seeding_params,
+                                       self._torrent_seeding_headers),
+                multi_page=True)
+
     def _parse_logged_in(self, html_text):
         if self._site_cookie == "":
             log.warn(f"【Sites】{self.site_name} cookie is null")
@@ -51,6 +72,8 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
 
         data = user.get("data")
         self.username = data.get("username")
+        self.user_level = data.get("role")
+        self.join_at = StringUtils.unify_datetime_str(data.get("createdDate"))
         member_count = data.get("memberCount")
         self.upload = member_count.get("uploaded")
         self.download = member_count.get("downloaded")
@@ -77,15 +100,40 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         :return: 下页地址
         """
         # {"userid":"300094","type":"SEEDING","pageNumber":1,"pageSize":20}
-        return None
+        if not multi_page:
+            self.seeding_info = []
+            self.seeding_size = 0
+        res = json.loads(html_text) or {}
+        if res.get("message") != "SUCCESS":
+            return None
+        data = res.get("data") or {}
+        next_page = None
+        if data.get("totalPages") != "1":
+            next_page = StringUtils.str_int(res.get("pageNumber") or 1) + 1
+
+        self.seeding = StringUtils.str_int(data.get("total") or 0)
+
+        torrents = data.get("data") or []
+        page_seeding_info = []
+        seeding_size = 0
+        for torrent in torrents:
+            obj = torrent.get("torrent") or {}
+            size = StringUtils.str_int(obj.get("size") or 0)
+            seeders = StringUtils.str_int((obj.get("status") or {}).get("seeders"))
+            page_seeding_info.append([seeders, size])
+            seeding_size += size
+
+        self.seeding_info.extend(page_seeding_info)
+        self.seeding_size += seeding_size
+        return next_page
 
     def _get_page_content(self, url, params=None, headers=None):
-        #x-api-key
+        # x-api-key
         req_headers = {}
         req_headers.update({
-                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "x-api-key": f"{self._token}"
-                })
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "x-api-key": f"{self._token}"
+        })
         proxies = Config().get_proxies() if self._proxy else None
         if headers or self._addition_headers:
             if headers:
@@ -106,7 +154,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                                timeout=60,
                                proxies=proxies,
                                headers=req_headers).get_res(url=url)
-        
+
         if res is not None and res.status_code in (200, 500, 403):
             if "charset=utf-8" in res.text or "charset=UTF-8" in res.text:
                 res.encoding = "UTF-8"
