@@ -275,6 +275,7 @@ class Sites:
             ret = json.loads(res.text)
             if ret.get("message") == "SUCCESS":
                 return True, "连接成功", seconds
+        log.debug(f"test_mteam {res.text}")
         return False, '连接失败', seconds
 
     def test_connection(self, site_id):
