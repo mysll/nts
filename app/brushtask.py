@@ -829,10 +829,20 @@ class BrushTask(object):
             if self.sites.check_ratelimit(siteid):
                 return False
 
-            torrent_attr = self.siteconf.check_torrent_attr(torrent_url=torrent_url,
-                                                            cookie=cookie,
-                                                            ua=ua,
-                                                            proxy=proxy)
+            if 'm-team' in torrent_url:
+                site_info = self.sites.get_sites(siteid)
+                if not site_info:
+                    return False
+                torrent_attr = self.siteconf.check_mteam_torrent_attr(site_url=site_info.get("signurl"),
+                                                                      torrent_url=torrent_url,
+                                                                      cookie=cookie,
+                                                                      proxy=proxy)
+            else:
+                torrent_attr = self.siteconf.check_torrent_attr(torrent_url=torrent_url,
+                                                                cookie=cookie,
+                                                                ua=ua,
+                                                                proxy=proxy)
+
             torrent_peer_count = torrent_attr.get("peer_count")
             log.debug("【Brush】%s 解析详情, %s" % (title, torrent_attr))
 
