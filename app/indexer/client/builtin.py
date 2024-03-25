@@ -209,7 +209,7 @@ class BuiltinIndexer(_IIndexClient):
 
         if indexer.parser == "MTeam":
             error_flag, result_array = MTeam(indexer).search(keyword=keyword,
-                                                                    page=page)
+                                                             page=int(page) + 1)
         elif indexer.parser == "RenderSpider":
             error_flag, result_array = RenderSpider(indexer).search(keyword=keyword,
                                                                     page=page)

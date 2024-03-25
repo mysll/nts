@@ -56,13 +56,15 @@ class MTeam:
             log.warn(f"【INDEXER】{self._indexer_name} 未获取到token，无法搜索")
             return True, []
 
+        if page == 0:
+            page = 1
         params = {
             "pageNumber": page,
             "pageSize": 100
         }
         if imdb_id:
             params["imdb"] = imdb_id
-        else:
+        elif keyword:
             params["keyword"] = keyword
 
         discount = {"PERCENT_50": 0.5,
@@ -87,10 +89,11 @@ class MTeam:
                     'size': StringUtils.str_int(result.get('size')),
                     'seeders': status.get('seeders'),
                     'peers': status.get('leechers'),
+                    'grabs': status.get("timesCompleted"),
                     'downloadvolumefactor': discount.get(status.get('discount'), 1.0),
                     'uploadvolumefactor': status.get(status.get('status'), 1.0),
                     'page_url': self._pageurl % (self._domain, result.get('id')),
-                    'imdbid': result.get('imdb')
+                    'imdbid': (result.get('imdb') or "").replace("http://www.imdb.com/title/", "", -1)
                 }
                 torrents.append(torrent)
         elif res is not None:
