@@ -34,13 +34,13 @@ class MTeam(_ISiteSigninHandler):
         site_cookie = site_info.get("cookie")
 
         if site_cookie == "":
-            self.error(f"签到失败，cookie 为空")
-            return False, f'【{site}】签到失败，cookie 为空'
+            self.error(f"模拟登录失败，cookie 为空")
+            return False, f'【{site}】模拟登录失败，cookie 为空'
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            self.error(f"签到失败，cookie 格式错误,cookie;token=xx;user_id=yy")
-            return False, f'【{site}】签到失败，cookie 格式错误,cookie;token=xx;user_id=yy'
+            self.error(f"模拟登录失败，cookie 格式错误,cookie;token=xx;user_id=yy")
+            return False, f'【{site}】模拟登录失败，cookie 格式错误,cookie;token=xx;user_id=yy'
 
         site_token = cookie_dic["token"]
 
@@ -59,5 +59,5 @@ class MTeam(_ISiteSigninHandler):
         if res is not None and res.status_code == 200:
             ret = json.loads(res.text)
             if ret.get("message") == "SUCCESS":
-                return True, f'【{site}】签到成功'
-        return False, f'【{site}】签到失败'
+                return True, f'【{site}】模拟登录成功'
+        return False, f'【{site}】模拟登录失败'
