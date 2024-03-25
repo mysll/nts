@@ -70,9 +70,19 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         if user.get("message") != "SUCCESS":
             return
 
+        lvl = {"0": "Peasant",
+               "1": "User",
+               "2": "Power User",
+               "3": "Elite User",
+               "4": "Crazy User",
+               "5": "Insane User",
+               "6": "Veteran User",
+               "7": "Extreme User",
+               "8": "Ultimate User",
+               "9": "mTorrent Master"}
         data = user.get("data")
         self.username = data.get("username")
-        self.user_level = data.get("role")
+        self.user_level = lvl.get(data.get("role")) or "unknown"
         self.join_at = StringUtils.unify_datetime_str(data.get("createdDate"))
         member_count = data.get("memberCount")
         self.upload = member_count.get("uploaded")
