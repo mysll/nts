@@ -79,7 +79,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                "6": "Veteran User",
                "7": "Extreme User",
                "8": "Ultimate User",
-               "9": "mTorrent Master"}
+               "9": "Nexus Master"}
         data = user.get("data")
         self.username = data.get("username")
         self.user_level = lvl.get(data.get("role")) or "unknown"
