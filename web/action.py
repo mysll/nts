@@ -11,7 +11,7 @@ import sqlite3
 import time
 from math import floor
 from pathlib import Path
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse, parse_qs
 
 import cn2an
 from flask_login import logout_user, current_user
@@ -556,7 +556,15 @@ class WebAction:
             media = Media().get_media_info(title=res.TORRENT_NAME, subtitle=res.DESCRIPTION)
             if not media:
                 continue
-            media.set_torrent_info(enclosure=res.ENCLOSURE,
+            enclosure = res.ENCLOSURE
+            if 'mteam-download' in res.ENCLOSURE:
+                parsed_url = urlparse(res.ENCLOSURE)
+                params = parse_qs(parsed_url.query)
+                tid = params.get("tid")
+                if not tid:
+                    continue
+                enclosure = Sites().get_site_download_url(tid)
+            media.set_torrent_info(enclosure=enclosure,
                                    size=res.SIZE,
                                    site=res.SITE,
                                    page_url=res.PAGEURL,
@@ -580,6 +588,13 @@ class WebAction:
         """
         site = data.get("site")
         enclosure = data.get("enclosure")
+        if 'mteam-download' in enclosure:
+            parsed_url = urlparse(enclosure)
+            params = parse_qs(parsed_url.query)
+            tid = params.get("tid")
+            if not tid:
+                return {"code": -1, "msg": "下载链接错误"}
+            enclosure = Sites().get_site_download_url(tid)
         title = data.get("title")
         description = data.get("description")
         page_url = data.get("page_url")
