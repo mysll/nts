@@ -65,6 +65,12 @@ class MTeam:
         else:
             params["keyword"] = keyword
 
+        discount = {"PERCENT_50": 0.5,
+                    "FREE": 0.0,
+                    "NORMAL": 1.0
+                    }
+        status = {"NORMAL": 1.0
+                  }
         res = self._req.post_res(self._search_url, json=params)
         torrents = []
         if res and res.status_code == 200:
@@ -80,9 +86,9 @@ class MTeam:
                     'pubdate': StringUtils.timestamp_to_date(result.get('createdDate')),
                     'size': StringUtils.str_int(result.get('size')),
                     'seeders': status.get('seeders'),
-                    'peers': result.get('leechers'),
-                    'downloadvolumefactor': 0.0 if result.get('discount') == 'FREE' else 1.0,
-                    'uploadvolumefactor': 1.0 if result.get('status') == 'NORMAL' else 1.0,
+                    'peers': status.get('leechers'),
+                    'downloadvolumefactor': discount.get(status.get('discount'), 1.0),
+                    'uploadvolumefactor': status.get(status.get('status'), 1.0),
                     'page_url': self._pageurl % (self._domain, result.get('id')),
                     'imdbid': result.get('imdb')
                 }
