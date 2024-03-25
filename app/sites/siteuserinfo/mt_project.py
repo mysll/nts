@@ -143,14 +143,12 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                 req_headers.update(self._addition_headers)
 
         if params:
-            res = RequestUtils(cookies=self._site_cookie,
-                               session=self._session,
+            res = RequestUtils(session=self._session,
                                timeout=60,
                                proxies=proxies,
                                headers=req_headers).post_res(url=url, data=params)
         else:
-            res = RequestUtils(cookies=self._site_cookie,
-                               session=self._session,
+            res = RequestUtils(session=self._session,
                                timeout=60,
                                proxies=proxies,
                                headers=req_headers).get_res(url=url)

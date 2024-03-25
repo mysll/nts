@@ -1666,12 +1666,27 @@ def Img():
     return response
 
 
+@App.route('/mteam-download')
+@login_required
+def mteam_download():
+    tid = request.args.get('tid')
+    if not tid:
+        return make_response("参数错误", 400)
+
+    url = Sites().get_site_download_url(tid)
+    if url == "":
+        return make_response("", 304)
+
+    return redirect(url)
+
+
 @App.route('/stream-logging')
 @login_required
 def stream_logging():
     """
     实时日志EventSources响应
     """
+
     def __logging(_source=""):
         """
         实时日志
@@ -1705,6 +1720,7 @@ def stream_progress():
     """
     实时日志EventSources响应
     """
+
     def __progress(_type):
         """
         实时日志

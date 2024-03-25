@@ -236,6 +236,38 @@ class Sites:
         else:
             return self._site_favicons
 
+    def get_site_download_url(self, tid):
+        url = ""
+        site_info = self.get_sites_by_suffix("m-team")
+        if not site_info:
+            log.warn("站点不存在")
+            return url
+        site_cookie = site_info.get("cookie")
+        if not site_cookie:
+            log.warn("站点cookie未配置")
+            return url
+        cookie_dic = RequestUtils.cookie_parse(site_cookie or "")
+        if "token" not in cookie_dic:
+            log.warn(f'cookie 格式错误,cookie;token=xx;user_id=yy')
+            return url
+        token = cookie_dic["token"]
+        proxy = Config().get_proxies() if site_info.get("proxy") else None
+        req_headers = {}
+        req_headers.update({
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "x-api-key": f"{token}"
+        })
+
+        res = RequestUtils(headers=req_headers,
+                           proxies=proxy
+                           ).post_res(url=urljoin(site_info.get("signurl"), "api/torrent/genDlToken"),
+                                      params={"id": tid})
+
+        if res and res.status_code == 200:
+            result = res.json()
+            url = result.get("data") or ""
+        return url
+
     def get_site_download_setting(self, site_name=None):
         """
         获取站点下载设置
@@ -253,11 +285,8 @@ class Sites:
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
         if "token" not in cookie_dic or "user_id" not in cookie_dic:
             return False, f'cookie 格式错误,cookie;token=xx;user_id=yy', 0
-
         token = cookie_dic["token"]
-
         proxy = Config().get_proxies() if site_info.get("proxy") else None
-
         req_headers = {}
         req_headers.update({
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",

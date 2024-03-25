@@ -264,7 +264,7 @@
                                           {{ SVG.dots() }}
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-end" style="">
-                                          {% if torrent.enclosure and torrent.enclosure.startswith('http') %}
+                                          {% if torrent.enclosure %}
                                           <a class="dropdown-item" href="{{ torrent.enclosure }}" target="_blank">
                                             下载种子文件
                                           </a>

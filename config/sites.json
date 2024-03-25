@@ -10528,6 +10528,7 @@
       "name": "馒头",
       "domain": "https://xp.m-team.io/",
       "encoding": "UTF-8",
+      "parser": "MTeam",
       "public": false,
       "search": {
         "paths": [
