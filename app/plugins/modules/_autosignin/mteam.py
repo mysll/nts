@@ -48,13 +48,12 @@ class MTeam(_ISiteSigninHandler):
 
         req_headers = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-api-key": f"{site_token}",
             "User-Agent": f"{ua}"
         }
 
         res = RequestUtils(cookies=site_cookie,
                            headers=req_headers,
-                           referer=site_info.get("signurl"),
+                           referer=urljoin(site_info.get("signurl"),"index"),
                            proxies=proxy).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
 
         if res is not None and res.status_code == 200:
