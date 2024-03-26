@@ -1,8 +1,10 @@
 import json
+import time
 from urllib.parse import urljoin
 import log
 from lxml import etree
 
+from app.helper import ChromeHelper
 from app.plugins.modules._autosignin._base import _ISiteSigninHandler
 from app.utils import StringUtils, RequestUtils
 from config import Config
@@ -43,7 +45,7 @@ class MTeam(_ISiteSigninHandler):
             return False, f'【{site}】模拟登录失败，cookie 格式错误,cookie;token=xx'
 
         site_token = cookie_dic["token"]
-
+        ua = site_info.get("ua")
         proxy = Config().get_proxies() if site_info.get("proxy") else None
 
         req_headers = {}
@@ -52,13 +54,37 @@ class MTeam(_ISiteSigninHandler):
             "x-api-key": f"{site_token}"
         })
 
-        res = RequestUtils(cookies=site_cookie,
-                           headers=req_headers,
-                           referer=site.info.get("signurl"),
-                           proxies=proxy).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
+        res = RequestUtils(headers=req_headers,
+                           proxies=proxy).post_res(url=urljoin(site_info.get("signurl"), "api/member/profile"))
 
+        user_id = None
         if res is not None and res.status_code == 200:
-            ret = json.loads(res.text)
-            if ret.get("message") == "SUCCESS":
-                return True, f'【{site}】模拟登录成功'
+            ret = res.json()
+            user_id = int(ret.get("data", {}).get("id", 0))
+
+        if not user_id:
+            return False, f"【{site}】仿真登录失败，无法获取用户ID！"
+        # https://xp.m-team.io/profile/detail/300094
+        # 首页
+        chrome = ChromeHelper()
+        if chrome.get_status():
+            self.info(f"{site} 开始仿真签到")
+            if not chrome.visit(url=urljoin(site_info.get("signurl"), "profile/detail/%d" % user_id),
+                                ua=ua,
+                                cookie=site_cookie,
+                                proxy=proxy):
+                self.warn("%s 无法打开网站" % site)
+                return False, f"【{site}】仿真登录失败，无法打开网站！"
+            time.sleep(10)
+            # 获取html
+            html_text = chrome.get_html()
+            if not html_text:
+                self.warn("%s 获取站点源码失败" % site)
+                return False, f"【{site}】仿真登录失败，获取站点源码失败！"
+            html = etree.HTML(html_text)
+            if html:
+                last_update = html.xpath('//*[@id="app-content"]/div/div[3]/div/div/div/table/tbody/tr[5]/td[2]')
+                if last_update:
+                    return True, f'【{site}】仿真登录成功,最近登录时间:{last_update}'
+
         return False, f'【{site}】模拟登录失败'
