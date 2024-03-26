@@ -64,7 +64,8 @@ class MTeam(_ISiteSigninHandler):
 
         if not user_id:
             return False, f"【{site}】仿真登录失败，无法获取用户ID！"
-        # https://xp.m-team.io/profile/detail/300094
+
+        log.debug(f"获取到的用户id: {user_id}")
         # 首页
         chrome = ChromeHelper()
         if chrome.get_status():
@@ -78,6 +79,7 @@ class MTeam(_ISiteSigninHandler):
             time.sleep(10)
             # 获取html
             html_text = chrome.get_html()
+            self.debug(f"获取到的html: {html_text}")
             if not html_text:
                 self.warn("%s 获取站点源码失败" % site)
                 return False, f"【{site}】仿真登录失败，获取站点源码失败！"
@@ -86,5 +88,7 @@ class MTeam(_ISiteSigninHandler):
                 last_update = html.xpath('//*[@id="app-content"]/div/div[3]/div/div/div/table/tbody/tr[5]/td[2]')
                 if last_update:
                     return True, f'【{site}】仿真登录成功,最近登录时间:{last_update}'
+                else:
+                    return False, f'【{site}】获取登录时间失败'
 
         return False, f'【{site}】模拟登录失败'
