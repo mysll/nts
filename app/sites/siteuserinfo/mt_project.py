@@ -25,7 +25,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
             return
         self._parse_site_page("")
         self._parse_user_base_info(
-            self._get_page_content(urljoin(self._base_url, self._user_detail_page), params={"uid": self.userid}))
+            self._get_page_content(urljoin(self._base_url, self._user_detail_page)))
         self._parse_seeding_pages()
         self.seeding_info = json.dumps(self.seeding_info)
 
@@ -57,12 +57,11 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
             return False
 
         cookie_dic = RequestUtils.cookie_parse(self._site_cookie)
-        if "token" not in cookie_dic or "user_id" not in cookie_dic:
+        if "token" not in cookie_dic:
             log.warn(f"【Sites】{self.site_name} token or user_id is null")
             return False
 
         self._token = cookie_dic["token"]
-        self.userid = cookie_dic["user_id"]
         return True
 
     def _parse_user_base_info(self, html_text):
@@ -81,6 +80,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                "8": "Ultimate User",
                "9": "Nexus Master"}
         data = user.get("data")
+        self.userid = data.get("id")
         self.username = data.get("username")
         self.user_level = lvl.get(data.get("role")) or "unknown"
         self.join_at = StringUtils.unify_datetime_str(data.get("createdDate"))
@@ -161,7 +161,7 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
             res = RequestUtils(session=self._session,
                                timeout=60,
                                proxies=proxies,
-                               headers=req_headers).get_res(url=url)
+                               headers=req_headers).post_res(url=url)
 
         if res is not None and res.status_code in (200, 500, 403):
             if "charset=utf-8" in res.text or "charset=UTF-8" in res.text:

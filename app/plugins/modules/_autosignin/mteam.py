@@ -38,9 +38,9 @@ class MTeam(_ISiteSigninHandler):
             return False, f'【{site}】模拟登录失败，cookie 为空'
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
-        if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            self.error(f"模拟登录失败，cookie 格式错误,cookie;token=xx;user_id=yy")
-            return False, f'【{site}】模拟登录失败，cookie 格式错误,cookie;token=xx;user_id=yy'
+        if "token" not in cookie_dic:
+            self.error(f"模拟登录失败，cookie 格式错误,cookie;token=xx")
+            return False, f'【{site}】模拟登录失败，cookie 格式错误,cookie;token=xx'
 
         site_token = cookie_dic["token"]
 
@@ -54,6 +54,7 @@ class MTeam(_ISiteSigninHandler):
 
         res = RequestUtils(cookies=site_cookie,
                            headers=req_headers,
+                           referer=site.info.get("signurl"),
                            proxies=proxy).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
 
         if res is not None and res.status_code == 200:

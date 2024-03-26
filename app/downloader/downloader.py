@@ -2,6 +2,7 @@ import os
 from threading import Lock
 from enum import Enum
 import json
+from urllib.parse import urlparse, parse_qs
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -325,9 +326,18 @@ class Downloader:
             # 获取种子内容，磁力链不解析
             if url.startswith("magnet:"):
                 content = url
+
             else:
-                # 获取Cookie和ua等
-                site_info = self.sites.get_sites(siteurl=url)
+                if url.startswith("/mteam-download"):
+                    parsed_url = urlparse(url)
+                    params = parse_qs(parsed_url.query)
+                    tid = params.get("tid")
+                    if tid:
+                        url = Sites().get_site_download_url(tid)
+                    site_info = Sites().get_sites_by_suffix("m-team.cc")
+                else:
+                    # 获取Cookie和ua等
+                    site_info = self.sites.get_sites(siteurl=url)
                 # 下载种子文件，并读取信息
                 _, content, dl_files_folder, dl_files, retmsg = Torrent().get_torrent_info(
                     url=url,

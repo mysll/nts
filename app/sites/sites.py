@@ -283,8 +283,8 @@ class Sites:
         site_cookie = site_info.get("cookie")
 
         cookie_dic = RequestUtils.cookie_parse(site_cookie)
-        if "token" not in cookie_dic or "user_id" not in cookie_dic:
-            return False, f'cookie 格式错误,cookie;token=xx;user_id=yy', 0
+        if "token" not in cookie_dic:
+            return False, f'cookie 格式错误,cookie;token=xx', 0
         token = cookie_dic["token"]
         proxy = Config().get_proxies() if site_info.get("proxy") else None
         req_headers = {}
@@ -296,7 +296,7 @@ class Sites:
         res = RequestUtils(cookies=site_cookie,
                            headers=req_headers,
                            proxies=proxy
-                           ).post_res(url=urljoin(site_info.get("signurl"), "api/member/updateLastBrowse"))
+                           ).post_res(url=urljoin(site_info.get("signurl"), "api/member/profile"))
 
         seconds = int((datetime.now() - start_time).microseconds / 1000)
 

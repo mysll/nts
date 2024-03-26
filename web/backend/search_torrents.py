@@ -1,5 +1,6 @@
 import os.path
 import re
+from urllib.parse import parse_qs, urlparse
 
 import log
 from app.downloader import Downloader
@@ -257,8 +258,17 @@ def search_media_by_message(input_str, in_from: SearchType, user_id, user_name=N
 
         # 下载链接
         if SEARCH_MEDIA_TYPE[user_id] == "DOWNLOAD":
-            # 检查是不是有这个站点
-            site_info = Sites().get_sites(siteurl=input_str)
+            if input_str.startswith('/mteam-download'):
+                parsed_url = urlparse(input_str)
+                params = parse_qs(parsed_url.query)
+                tid = params.get("tid")
+                if tid:
+                    input_str = Sites().get_site_download_url(tid)
+                site_info = Sites().get_sites_by_suffix("m-team.cc")
+            else:
+                # 检查是不是有这个站点
+                site_info = Sites().get_sites(siteurl=input_str)
+
             # 偿试下载种子文件
             filepath, content, retmsg = Torrent().save_torrent_file(
                 url=input_str,
