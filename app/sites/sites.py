@@ -301,10 +301,9 @@ class Sites:
         seconds = int((datetime.now() - start_time).microseconds / 1000)
 
         if res is not None and res.status_code == 200:
-            ret = json.loads(res.text)
+            ret = res.json()
             if ret.get("message") == "SUCCESS":
                 return True, "连接成功", seconds
-        log.debug(f"test_mteam {res.text}")
         return False, '连接失败', seconds
 
     def test_connection(self, site_id):
