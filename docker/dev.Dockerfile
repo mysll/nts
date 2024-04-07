@@ -1,4 +1,4 @@
-FROM python:3.11-alpine AS Builder
+FROM python:3.10-alpine AS Builder
 RUN apk add --no-cache --virtual .build-deps \
         libffi-dev \
         gcc \
@@ -13,6 +13,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && chmod +x /usr/bin/mc \
     && pip install --upgrade pip setuptools wheel \
     && pip install cython \
+    && pip install py-spy \
     && pip install -r https://raw.githubusercontent.com/mysll/nts/dev/requirements.txt \
     && apk del --purge .build-deps \
     && rm -rf /tmp/* /root/.cache /var/cache/apk/*
