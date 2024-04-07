@@ -13,3 +13,5 @@ redis
 wget
 shadow
 sudo
+gdb
+python3-dbg
