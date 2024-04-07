@@ -1,10 +1,12 @@
-FROM python:3.10-alpine AS Builder
+FROM python:3.11-alpine AS Builder
 RUN apk add --no-cache --virtual .build-deps \
         libffi-dev \
         gcc \
         musl-dev \
         libxml2-dev \
         libxslt-dev \
+        gdb \
+        python3-dbg \
     && apk add --no-cache $(echo $(wget --no-check-certificate -qO- https://raw.githubusercontent.com/mysll/nts/dev/package_list.txt)) \
     && ln -sf /usr/bin/python3 /usr/bin/python \
     && curl https://rclone.org/install.sh | bash \
