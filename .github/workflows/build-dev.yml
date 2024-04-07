@@ -17,7 +17,9 @@ jobs:
     name: Build Docker Image
     steps:
       - name: Checkout
-        uses: actions/checkout@dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
 
       - name: Release version
         id: release_version
