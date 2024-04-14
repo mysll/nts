@@ -76,9 +76,15 @@ class Slack(_IMessageClient):
             # 启动服务
             if self._interactive:
                 try:
+                    _proxy = Config().get_proxies()
+                    proxy = None
+                    if _proxy is not None:
+                        proxy = _proxy.get("http")
+
                     self._service = SocketModeHandler(
                         slack_app,
-                        self._client_config.get("app_token")
+                        self._client_config.get("app_token"),
+                        proxy=proxy
                     )
                     self._service.connect()
                     log.info("Slack消息接收服务启动")
