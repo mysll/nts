@@ -53,6 +53,7 @@ class CONFIGSITE(Base):
     EXCLUDE = Column(Text)
     SIZE = Column(Text)
     NOTE = Column(Text)
+    APIKEY = Column(Text)
 
 
 class CONFIGSYNCPATHS(Base):

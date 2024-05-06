@@ -189,6 +189,15 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="mb-3">
+              <label class="form-label">令牌 <span class="form-help" title="有些站点推荐使用 Api Key"
+                  data-bs-toggle="tooltip">?</span></label>
+              <input type="text" class="form-control" id="site_api_key" value="" placeholder="令牌/Api Key">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mb-3">
               <label class="form-label">RSS订阅地址 <span class="form-help" title="站点订阅源URL地址，用于电影、电视剧订阅、刷流，点击站点RSS图标获取"
                   data-bs-toggle="tooltip">?</span></label>
               <input type="text" class="form-control" id="site_rssurl" value="" placeholder="站点RSS订阅URL">
@@ -467,6 +476,7 @@
     $("#site_rssurl").val('');
     $("#site_signurl").val('');
     $("#site_cookie").val('');
+    $("#site_api_key").val('');
     $("#site_rule").val('');
     $("#site_ua").val('');
     $("#site_chrome").val('N');
@@ -495,6 +505,7 @@
         $("#site_rssurl").val(ret.site.rssurl);
         $("#site_signurl").val(ret.site.signurl);
         $("#site_cookie").val(ret.site.cookie);
+        $("#site_api_key").val(ret.site.api_key);
         $("#site_ua").val(ret.site.ua);
         $("#site_download_setting").val(ret.site.download_setting);
         if (ret.site.parse) {
@@ -571,6 +582,8 @@
     }
     //Cookie
     let site_cookie = $("#site_cookie").val();
+    //Api Key
+    let site_api_key = $("#site_api_key").val();
     //RSS URL
     let site_rssurl = $("#site_rssurl").val();
     if (site_rssurl) {
@@ -625,6 +638,7 @@
       "site_rssurl": site_rssurl,
       "site_signurl": site_signurl,
       "site_cookie": site_cookie,
+      "site_api_key": site_api_key,
       "site_include": site_uses,
       "site_note": {
         "rule": site_rule,

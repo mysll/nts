@@ -52,16 +52,9 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
                 multi_page=True)
 
     def _parse_logged_in(self, html_text):
-        if self._site_cookie == "":
-            log.warn(f"【Sites】{self.site_name} cookie is null")
+        if self._site_cookie == "" or not self._token or self._token == "":
+            log.warn(f"【Sites】{self.site_name} cookie or token is null")
             return False
-
-        cookie_dic = RequestUtils.cookie_parse(self._site_cookie)
-        if "token" not in cookie_dic:
-            log.warn(f"【Sites】{self.site_name} token or user_id is null")
-            return False
-
-        self._token = cookie_dic["token"]
         return True
 
     def _parse_user_base_info(self, html_text):
@@ -142,7 +135,6 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         req_headers = {}
         req_headers.update({
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-api-key": f"{self._token}"
         })
         proxies = Config().get_proxies() if self._proxy else None
         if headers or self._addition_headers:
@@ -156,11 +148,13 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
             res = RequestUtils(session=self._session,
                                timeout=60,
                                proxies=proxies,
+                               api_key=self._token,
                                headers=req_headers).post_res(url=url, data=params)
         else:
             res = RequestUtils(session=self._session,
                                timeout=60,
                                proxies=proxies,
+                               api_key=self._token,
                                headers=req_headers).post_res(url=url)
 
         if res is not None and res.status_code in (200, 500, 403):

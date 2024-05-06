@@ -104,25 +104,21 @@ class SiteConf:
                 return v
         return {}
 
-    def check_mteam_torrent_attr(self, site_url, torrent_url, cookie, proxy=False):
+    def check_mteam_torrent_attr(self, site_url, torrent_url, cookie, api_key, proxy=False):
         ret_attr = {
             "free": False,
             "2xfree": False,
             "hr": False,
             "peer_count": 0
         }
-        cookie_dic = RequestUtils.cookie_parse(cookie)
-        if "token" not in cookie_dic:
-            return ret_attr
-        token = cookie_dic["token"]
         parsed_url = urlparse(torrent_url)
         tid = int(parsed_url.path.split('/')[-1])
         params = {"id": tid, "origin": torrent_url}
         header = {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-api-key": f"{token}"
         }
         res = RequestUtils(headers=header,
+                           api_key=api_key,
                            proxies=Config().get_proxies() if proxy else None
                            ).post_res(url=urljoin(site_url, "api/torrent/detail"), params=params)
         if res and res.status_code == 200:

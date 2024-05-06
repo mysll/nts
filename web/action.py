@@ -1119,6 +1119,7 @@ class WebAction:
         rssurl = data.get('site_rssurl')
         signurl = data.get('site_signurl')
         cookie = data.get('site_cookie')
+        api_key = data.get('site_api_key')
         note = data.get('site_note')
         if isinstance(note, dict):
             note = json.dumps(note)
@@ -1140,7 +1141,8 @@ class WebAction:
                                      signurl=signurl,
                                      cookie=cookie,
                                      note=note,
-                                     rss_uses=rss_uses)
+                                     rss_uses=rss_uses,
+                                     api_key=api_key)
             if ret and (name != old_name):
                 # 更新历史站点数据信息
                 SiteUserInfo().update_site_name(name, old_name)
@@ -1152,7 +1154,8 @@ class WebAction:
                                   signurl=signurl,
                                   cookie=cookie,
                                   note=note,
-                                  rss_uses=rss_uses)
+                                  rss_uses=rss_uses,
+                                  api_key=api_key)
 
         return {"code": ret}
 

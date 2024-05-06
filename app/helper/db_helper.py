@@ -428,7 +428,7 @@ class DbHelper:
 
     @DbPersist(_db)
     def insert_config_site(self, name, site_pri,
-                           rssurl=None, signurl=None, cookie=None, note=None, rss_uses=None):
+                           rssurl=None, signurl=None, cookie=None, note=None, rss_uses=None, api_key=None):
         """
         插入站点信息
         """
@@ -441,7 +441,8 @@ class DbHelper:
             SIGNURL=signurl,
             COOKIE=cookie,
             NOTE=note,
-            INCLUDE=rss_uses
+            INCLUDE=rss_uses,
+            APIKEY=api_key
         ))
 
     @DbPersist(_db)
@@ -454,7 +455,7 @@ class DbHelper:
         self._db.query(CONFIGSITE).filter(CONFIGSITE.ID == int(tid)).delete()
 
     @DbPersist(_db)
-    def update_config_site(self, tid, name, site_pri, rssurl, signurl, cookie, note, rss_uses):
+    def update_config_site(self, tid, name, site_pri, rssurl, signurl, cookie, note, rss_uses, api_key):
         """
         更新站点信息
         """
@@ -468,7 +469,8 @@ class DbHelper:
                 "SIGNURL": signurl,
                 "COOKIE": cookie,
                 "NOTE": note,
-                "INCLUDE": rss_uses
+                "INCLUDE": rss_uses,
+                "APIKEY": api_key
             }
         )
 

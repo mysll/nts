@@ -61,6 +61,7 @@ class Sites:
             site_rssurl = site.RSSURL
             site_signurl = site.SIGNURL
             site_cookie = site.COOKIE
+            site_api_key = site.APIKEY
             site_uses = site.INCLUDE or ''
             uses = []
             if site_uses:
@@ -81,6 +82,7 @@ class Sites:
                 "rssurl": site_rssurl,
                 "signurl": site_signurl,
                 "cookie": site_cookie,
+                "api_key": site_api_key,
                 "rule": site_note.get("rule"),
                 "download_setting": site_note.get("download_setting"),
                 "rss_enable": rss_enable,
@@ -242,24 +244,21 @@ class Sites:
         if not site_info:
             log.warn("站点不存在")
             return url
-        site_cookie = site_info.get("cookie")
-        if not site_cookie:
-            log.warn("站点cookie未配置")
+
+        token = site_info.get("api_key")
+        if not token or token == "":
+            log.warn(f'api_key 没有设置')
             return url
-        cookie_dic = RequestUtils.cookie_parse(site_cookie or "")
-        if "token" not in cookie_dic:
-            log.warn(f'cookie 格式错误,cookie;token=xx;user_id=yy')
-            return url
-        token = cookie_dic["token"]
+        token = site_info.get("api_key")
         proxy = Config().get_proxies() if site_info.get("proxy") else None
         req_headers = {}
         req_headers.update({
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-api-key": f"{token}"
         })
 
         res = RequestUtils(headers=req_headers,
-                           proxies=proxy
+                           proxies=proxy,
+                           api_key=token,
                            ).post_res(url=urljoin(site_info.get("signurl"), "api/torrent/genDlToken"),
                                       params={"id": tid})
 
@@ -281,21 +280,17 @@ class Sites:
     def test_mteam(self, site_info):
         start_time = datetime.now()
         site_cookie = site_info.get("cookie")
-
-        cookie_dic = RequestUtils.cookie_parse(site_cookie)
-        if "token" not in cookie_dic:
-            return False, f'cookie 格式错误,cookie;token=xx', 0
-        token = cookie_dic["token"]
+        token = site_info.get("api_key")
         proxy = Config().get_proxies() if site_info.get("proxy") else None
         req_headers = {}
         req_headers.update({
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "x-api-key": f"{token}"
         })
 
         res = RequestUtils(cookies=site_cookie,
                            headers=req_headers,
-                           proxies=proxy
+                           proxies=proxy,
+                           api_key=token,
                            ).post_res(url=urljoin(site_info.get("signurl"), "api/member/profile"))
 
         seconds = int((datetime.now() - start_time).microseconds / 1000)
@@ -377,7 +372,7 @@ class Sites:
         return infos
 
     def add_site(self, name, site_pri,
-                 rssurl=None, signurl=None, cookie=None, note=None, rss_uses=None):
+                 rssurl=None, signurl=None, cookie=None, note=None, rss_uses=None, api_key=None):
         """
         添加站点
         """
@@ -387,12 +382,13 @@ class Sites:
                                                signurl=signurl,
                                                cookie=cookie,
                                                note=note,
-                                               rss_uses=rss_uses)
+                                               rss_uses=rss_uses,
+                                               api_key=api_key)
         self.init_config()
         return ret
 
     def update_site(self, tid, name, site_pri,
-                    rssurl, signurl, cookie, note, rss_uses):
+                    rssurl, signurl, cookie, note, rss_uses, api_key):
         """
         更新站点
         """
@@ -403,7 +399,8 @@ class Sites:
                                                signurl=signurl,
                                                cookie=cookie,
                                                note=note,
-                                               rss_uses=rss_uses)
+                                               rss_uses=rss_uses,
+                                               api_key=api_key)
         self.init_config()
         return ret
 

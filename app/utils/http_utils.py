@@ -21,7 +21,8 @@ class RequestUtils:
                  timeout=None,
                  referer=None,
                  content_type=None,
-                 accept_type=None):
+                 accept_type=None,
+                 api_key=None):
         if not content_type:
             content_type = "application/x-www-form-urlencoded; charset=UTF-8"
         if headers:
@@ -48,6 +49,10 @@ class RequestUtils:
                 self._cookies = self.cookie_parse(cookies)
             else:
                 self._cookies = cookies
+        if api_key:
+            self._headers.update({
+                'x-api-key': api_key
+            })
         if proxies:
             self._proxies = proxies
         if session:

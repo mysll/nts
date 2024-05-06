@@ -54,7 +54,7 @@ class SiteUserInfo(object):
         return None
 
     def build(self, url, site_id, site_name,
-              site_cookie=None, ua=None, emulate=None, proxy=False):
+              site_cookie=None, ua=None, emulate=None, proxy=False, api_key=None):
         if not site_cookie:
             return None
         session = requests.Session()
@@ -140,7 +140,7 @@ class SiteUserInfo(object):
         if not site_schema:
             log.error("【Sites】站点 %s 无法识别站点类型" % site_name)
             return None
-        return site_schema(site_name, url, site_cookie, html_text, session=session, ua=ua, emulate=emulate, proxy=proxy)
+        return site_schema(site_name, url, site_cookie, html_text, session=session, ua=ua, emulate=emulate, proxy=proxy, api_key=api_key)
 
     def __refresh_site_data(self, site_info):
         """
@@ -158,6 +158,7 @@ class SiteUserInfo(object):
         unread_msg_notify = site_info.get("unread_msg_notify")
         chrome = site_info.get("chrome")
         proxy = site_info.get("proxy")
+        api_key = site_info.get("api_key")
         try:
             site_user_info = self.build(url=site_url,
                                         site_id=site_id,
@@ -165,7 +166,8 @@ class SiteUserInfo(object):
                                         site_cookie=site_cookie,
                                         ua=ua,
                                         emulate=chrome,
-                                        proxy=proxy)
+                                        proxy=proxy,
+                                        api_key=api_key)
             if site_user_info:
                 log.debug(f"【Sites】站点 {site_name} 开始以 {site_user_info.site_schema()} 模型解析")
                 # 开始解析
