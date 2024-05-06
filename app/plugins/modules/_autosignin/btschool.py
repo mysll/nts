@@ -103,8 +103,7 @@ class BTSchool(_ISiteSigninHandler):
                 return True, f'【{site}】签到成功'
 
     def __chrome_visit(self, chrome, url, ua, site_cookie, proxy, site):
-        if not chrome.visit(url=url, ua=ua, cookie=site_cookie,
-                            proxy=proxy):
+        if not chrome.visit(url=url, ua=ua, cookie=site_cookie, timeout=120, proxy=proxy):
             self.warn("%s 无法打开网站" % site)
             return f"【{site}】仿真签到失败，无法打开网站！", None
         # 检测是否过cf

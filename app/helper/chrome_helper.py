@@ -91,7 +91,7 @@ class ChromeHelper(object):
         options.add_argument('−−lang=zh-CN')
         options.add_experimental_option("prefs", prefs)
         chrome = ChromeWithPrefs(options=options, driver_executable_path=self._executable_path)
-        chrome.set_page_load_timeout(30)
+        chrome.set_page_load_timeout(120)
         return chrome
 
     def visit(self, url, ua=None, cookie=None, timeout=30, proxy=None):
