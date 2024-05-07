@@ -81,6 +81,9 @@ class SiteCookie(object):
         if not html_text:
             return None, None, "获取源码失败"
         if SiteHelper.is_logged_in(html_text):
+            if url.find("m-team") != -1:
+                auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
+                return auth, chrome.get_ua(), ""
             return chrome.get_cookies(), chrome.get_ua(), "已经登录过且Cookie未失效"
         # 站点配置
         login_conf = self.siteconf.get_login_conf()
@@ -190,7 +193,7 @@ class SiteCookie(object):
                 # 提交登录
                 submit_obj.click()
                 # 等待页面刷新完毕
-                WebDriverWait(driver=chrome.browser, timeout=20).until(es.staleness_of(submit_obj))
+                WebDriverWait(driver=chrome.browser, timeout=30).until(es.staleness_of(submit_obj))
             else:
                 return None, None, "未找到登录按钮"
         except Exception as e:

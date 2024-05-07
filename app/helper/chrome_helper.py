@@ -154,11 +154,11 @@ class ChromeHelper(object):
             if not keys:
                 return local_storage_content
             local_json = json.loads(local_storage_content)
+            ret = {}
             for key in local_json:
                 if key in keys:
-                    continue
-                del local_json[key]
-            return json.dumps(local_json)
+                    ret[key] = local_json[key]
+            return json.dumps(ret)
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
             return ""
