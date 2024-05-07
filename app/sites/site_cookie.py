@@ -202,15 +202,8 @@ class SiteCookie(object):
             return None, None, "获取源码失败"
         if SiteHelper.is_logged_in(html_text):
             if url.find("m-team") != -1:
-                try:
-                    local_storage_content = chrome.execute_script("return JSON.stringify(window.localStorage);")
-                    local_json = json.loads(local_storage_content)
-                    if 'persist:persist' in local_json:
-                        del local_json['persist:persist']
-                    return json.dumps(local_json), chrome.get_ua(), ""
-                except Exception as e:
-                    ExceptionUtils.exception_traceback(e)
-                    return None, None, "仿真登录失败：%s" % str(e)
+                auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
+                return auth, chrome.get_ua(), ""
             return chrome.get_cookies(), chrome.get_ua(), ""
         else:
             if url.find("m-team") != -1:
@@ -283,15 +276,8 @@ class SiteCookie(object):
                     # check again
                     html_text = chrome.get_html()
                     if SiteHelper.is_logged_in(html_text):
-                        try:
-                            local_storage_content = chrome.execute_script("return JSON.stringify(window.localStorage);")
-                            local_json = json.loads(local_storage_content)
-                            if 'persist:persist' in local_json:
-                                del local_json['persist:persist']
-                            return json.dumps(local_json), chrome.get_ua(), ""
-                        except Exception as e:
-                            ExceptionUtils.exception_traceback(e)
-                            return None, None, "仿真登录失败：%s" % str(e)
+                        auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
+                        return auth, chrome.get_ua(), ""
 
             # 读取错误信息
             error_xpath = None

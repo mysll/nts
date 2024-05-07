@@ -8,7 +8,7 @@ import undetected_chromedriver as uc
 from webdriver_manager.chrome import ChromeDriverManager
 
 import app.helper.cloudflare_helper as CloudflareHelper
-from app.utils import SystemUtils, RequestUtils
+from app.utils import SystemUtils, RequestUtils, ExceptionUtils
 from config import Config
 
 lock = Lock()
@@ -147,6 +147,21 @@ class ChromeHelper(object):
             return self._chrome.execute_script(script)
         except Exception as err:
             print(str(err))
+
+    def get_local_storage(self, keys=None):
+        try:
+            local_storage_content = self.execute_script("return JSON.stringify(window.localStorage);")
+            if not keys:
+                return local_storage_content
+            local_json = json.loads(local_storage_content)
+            for key in local_json:
+                if key in keys:
+                    continue
+                del local_json[key]
+            return json.dumps(local_json)
+        except Exception as e:
+            ExceptionUtils.exception_traceback(e)
+            return ""
 
     def get_title(self):
         if not self._chrome:
