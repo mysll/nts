@@ -31,8 +31,8 @@ class MTeam(_ISiteSigninHandler):
         """
         return url and url.find(cls.site_url) != -1
 
-    def __chrome_visit(self, chrome, url, ua, proxy, site):
-        if not chrome.visit(url=url, ua=ua, proxy=proxy):
+    def __chrome_visit(self, chrome, url, ua, proxy, site, local_storage):
+        if not chrome.visit(url=url, ua=ua, proxy=proxy, local_storage=local_storage):
             self.warn("%s 无法打开网站" % site)
             return f"【{site}】仿真签到失败，无法打开网站！", None
         # 检测是否过cf
@@ -65,8 +65,9 @@ class MTeam(_ISiteSigninHandler):
         site = site_info.get("name")
         ua = site_info.get("ua")
         sign_url = site_info.get("signurl")
+        cookie = site_info.get("cookie")
         proxy = Config().get_proxies() if site_info.get("proxy") else None
-
+        local_storage_content = json.loads(cookie)
         chrome = SignChromeHelper()
         if chrome.get_status():
             self.info(f"{site} 开始仿真签到")
@@ -75,7 +76,8 @@ class MTeam(_ISiteSigninHandler):
                                                  url=sign_url,
                                                  ua=ua,
                                                  proxy=proxy,
-                                                 site=site)
+                                                 site=site,
+                                                 local_storage=local_storage_content)
             if not html_text:
                 return False, f"【{site}】${msg}"
 
@@ -177,7 +179,7 @@ class MTeam(_ISiteSigninHandler):
                 # 提交登录
                 submit_obj.click()
                 # 等待页面刷新完毕
-                WebDriverWait(driver=chrome.browser, timeout=5).until(es.staleness_of(submit_obj))
+                WebDriverWait(driver=chrome.browser, timeout=20).until(es.staleness_of(submit_obj))
             else:
                 return None, None, "未找到登录按钮"
         except Exception as e:

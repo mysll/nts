@@ -102,7 +102,7 @@ class SignChromeHelper(object):
         chrome.set_page_load_timeout(30)
         return chrome
 
-    def visit(self, url, ua=None, timeout=30, proxy=None):
+    def visit(self, url, ua=None, timeout=30, proxy=None, local_storage=None):
         self._proxy = proxy
         if not self.browser:
             return False
@@ -115,6 +115,11 @@ class SignChromeHelper(object):
                 self._chrome.implicitly_wait(timeout)
             time.sleep(2)
             self._chrome.get(url)
+            if local_storage:
+                for key, value in local_storage.items():
+                    self._chrome.execute_script(f"window.localStorage.setItem('{key}', '{value}')")
+            self._chrome.refresh()
+            time.sleep(5)
             return True
         except Exception as err:
             print(str(err))
