@@ -34,7 +34,7 @@ class MTeam(_ISiteSigninHandler):
     def __chrome_visit(self, chrome, url, ua, proxy, site, local_storage):
         if not chrome.visit(url=url, ua=ua, proxy=proxy, local_storage=local_storage):
             self.warn("%s 无法打开网站" % site)
-            return f"【{site}】仿真签到失败，无法打开网站！", None
+            return f"【{site}】仿真登录失败，无法打开网站！", None
         # 检测是否过cf
         time.sleep(5)
         if under_challenge(chrome.get_html()):
@@ -42,13 +42,13 @@ class MTeam(_ISiteSigninHandler):
             cloudflare = chrome.pass_cloudflare()
             if not cloudflare:
                 self.warn("%s 跳转站点失败" % site)
-                return f"【{site}】仿真签到失败，跳转站点失败！", None
+                return f"【{site}】仿真登录失败，跳转站点失败！", None
         # 获取html
         html_text = chrome.get_html()
         if not html_text:
             #     return None, None
             #     self.warn("%s 获取站点源码失败" % site)
-            return f"【{site}】仿真签到失败，获取站点源码失败！", None
+            return f"【{site}】仿真登录失败，获取站点源码失败！", None
         # if "魔力值" not in html_text:
         #     self.error(f"签到失败，站点无法访问")
         #     return f'【{site}】仿真签到失败，站点无法访问', None
@@ -70,7 +70,7 @@ class MTeam(_ISiteSigninHandler):
         local_storage_content = json.loads(cookie)
         chrome = SignChromeHelper()
         if chrome.get_status():
-            self.info(f"{site} 开始仿真签到")
+            self.info(f"{site} 开始仿真登录")
             # first, get html
             msg, html_text = self.__chrome_visit(chrome=chrome,
                                                  url=sign_url,
@@ -83,7 +83,7 @@ class MTeam(_ISiteSigninHandler):
 
             # second, check if it is home
             if "魔力值" in html_text:
-                return True, f"【{site}】签到成功"
+                return True, f"【{site}】登录成功"
 
             # third check if login page and try login
             value = SystemConfig().get(key=SystemConfigKey.CookieUserInfo)
@@ -95,10 +95,10 @@ class MTeam(_ISiteSigninHandler):
 
             # second, check if it is home
             if "魔力值" in html_text:
-                return True, f"【{site}】签到成功"
+                return True, f"【{site}】登录成功"
 
             if "郵箱驗證碼" in html_text:
-                return False, f"【{site}】触发邮箱登录，无法签到，请在站点管理处更新站点信息"
+                return False, f"【{site}】触发邮箱登录，无法登录，请在站点管理处更新站点信息"
 
     def try_login(self, chrome,
                   html_text,
