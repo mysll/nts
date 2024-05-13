@@ -2,6 +2,7 @@ import os.path
 import re
 import time
 from datetime import datetime
+from urllib.parse import urlparse
 
 import transmission_rpc
 
@@ -30,6 +31,7 @@ class Transmission(_IDownloadClient):
 
     trc = None
     host = None
+    schema = "http"
     port = None
     username = None
     password = None
@@ -45,7 +47,14 @@ class Transmission(_IDownloadClient):
 
     def init_config(self):
         if self._client_config:
-            self.host = self._client_config.get('host')
+            host = self._client_config.get('host')
+            schema = "http"
+            if host.lower().startswith(("http:", "https:")):
+                base_url = urlparse(url=host)
+                schema = base_url.scheme.lower()
+                host = base_url.netloc
+            self.schema = schema
+            self.host = host
             self.port = int(self._client_config.get('port')) if str(self._client_config.get('port')).isdigit() else 0
             self.username = self._client_config.get('username')
             self.password = self._client_config.get('password')
@@ -70,7 +79,8 @@ class Transmission(_IDownloadClient):
         """
         try:
             # 登录
-            trt = transmission_rpc.Client(host=self.host,
+            trt = transmission_rpc.Client(protocol=self.schema,
+                                          host=self.host,
                                           port=self.port,
                                           username=self.username,
                                           password=self.password,
