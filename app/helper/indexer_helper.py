@@ -97,7 +97,7 @@ class IndexerConf(object):
         # 是否内置站点
         self.builtin = builtin
         # 域名
-        self.domain = domain
+        self.domain = domain if domain else datas.get("domain")
         # 搜索
         self.search = datas.get('search', {})
         # 批量搜索，如果为空对象则表示不支持批量搜索
