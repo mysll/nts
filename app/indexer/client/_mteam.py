@@ -29,7 +29,6 @@ class MTeam:
         self._search_url = urljoin(self._domain, self._api_url)
         if indexer.proxy:
             self._proxy = Config().get_proxies()
-        self._cookie = indexer.cookie
         self.init_config()
 
     def init_config(self):
