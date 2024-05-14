@@ -10526,7 +10526,7 @@
     {
       "id": "mteam",
       "name": "馒头",
-      "domain": "https://xp.m-team.io/",
+      "domain": "https://kp.m-team.cc/",
       "encoding": "UTF-8",
       "parser": "MTeam",
       "public": false,

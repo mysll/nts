@@ -43,13 +43,15 @@ class IndexerHelper:
                     ua=None,
                     render=None,
                     language=None,
-                    pri=None):
+                    pri=None,
+                    token=None):
         if not url:
             return None
         for indexer in self._indexers:
             if not indexer.get("domain"):
                 continue
             if StringUtils.site_equal(indexer.get("domain"), url):
+                domain = StringUtils.get_base_url(url)
                 return IndexerConf(datas=indexer,
                                    siteid=siteid,
                                    cookie=cookie,
@@ -62,7 +64,9 @@ class IndexerHelper:
                                    render=render,
                                    builtin=True,
                                    language=language,
-                                   pri=pri)
+                                   pri=pri,
+                                   token=token,
+                                   domain=domain)
         return None
 
 
@@ -81,7 +85,9 @@ class IndexerConf(object):
                  render=None,
                  builtin=True,
                  language=None,
-                 pri=None):
+                 pri=None,
+                 token=None,
+                 domain=None):
         if not datas:
             return
         # 索引ID
@@ -91,7 +97,7 @@ class IndexerConf(object):
         # 是否内置站点
         self.builtin = builtin
         # 域名
-        self.domain = datas.get('domain')
+        self.domain = domain
         # 搜索
         self.search = datas.get('search', {})
         # 批量搜索，如果为空对象则表示不支持批量搜索
@@ -122,3 +128,5 @@ class IndexerConf(object):
         self.language = language if language else datas.get('language')
         # 索引器优先级
         self.pri = pri if pri else 0
+        # token
+        self.token = token

@@ -24,6 +24,7 @@ class MTeam:
         self._indexer_id = indexer.id
         self._indexer_name = indexer.name
         self._cookie = indexer.cookie
+        self._token = indexer.token
         self._domain = indexer.domain
         self._search_url = urljoin(self._domain, self._api_url)
         if indexer.proxy:
@@ -32,24 +33,31 @@ class MTeam:
         self.init_config()
 
     def init_config(self):
-        self.__get_token()
         session = requests.session()
         header = {
-            "Content-Type": "application/json; charset=UTF-8",
-            "x-api-key": f"{self._token}"
+            "Content-Type": "application/json; charset=UTF-8"
         }
         self._req = RequestUtils(headers=header,
                                  proxies=self._proxy,
                                  session=session,
-                                 timeout=10)
+                                 timeout=10,
+                                 api_key=self._token)
 
-    def __get_token(self):
-        cookie_dic = RequestUtils.cookie_parse(self._cookie)
-        if "token" not in cookie_dic:
-            log.warn(f"【INDEXER】{self._indexer_name} 未获取到token")
-            return
-
-        self._token = cookie_dic["token"]
+    def get_discount(self, discount):
+        if discount == "PERCENT_50":
+            return 1.0, 0.5
+        elif discount == "NORMAL":
+            return 1.0, 1.0
+        elif discount == "PERCENT_70":
+            return 1.0, 0.7
+        elif discount == "FREE":
+            return 1.0, 0.0
+        elif discount == "_2X_FREE":
+            return 2.0, 0.0
+        elif discount == "_2X":
+            return 2.0, 1.0
+        elif discount == "_2X_PERCENT_50":
+            return 2.0, 0.5
 
     def search(self, keyword, imdb_id=None, page=1):
         if not self._token:
@@ -66,13 +74,6 @@ class MTeam:
             params["imdb"] = imdb_id
         elif keyword:
             params["keyword"] = keyword
-
-        discount = {"PERCENT_50": 0.5,
-                    "FREE": 0.0,
-                    "NORMAL": 1.0
-                    }
-        status = {"NORMAL": 1.0
-                  }
         res = self._req.post_res(self._search_url, json=params)
         torrents = []
         if res and res.status_code == 200:
@@ -80,6 +81,7 @@ class MTeam:
             results = data.get('data') or []
             for result in results:
                 status = result.get('status') or {}
+                up_discount, down_discount = self.get_discount(status.get('discount'))
                 torrent = {
                     'indexer': self._indexer_id,
                     'title': result.get('name'),
@@ -90,8 +92,8 @@ class MTeam:
                     'seeders': status.get('seeders'),
                     'peers': status.get('leechers'),
                     'grabs': status.get("timesCompleted"),
-                    'downloadvolumefactor': discount.get(status.get('discount'), 1.0),
-                    'uploadvolumefactor': status.get(status.get('status'), 1.0),
+                    'downloadvolumefactor': down_discount,
+                    'uploadvolumefactor': up_discount,
                     'page_url': self._pageurl % (self._domain, result.get('id')),
                     'imdbid': (result.get('imdb') or "").replace("http://www.imdb.com/title/", "", -1)
                 }

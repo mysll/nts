@@ -69,6 +69,7 @@ class BuiltinIndexer(_IIndexClient):
         for site in Sites().get_sites():
             url = site.get("signurl") or site.get("rssurl")
             cookie = site.get("cookie")
+            token = site.get("api_key")
             if not url or not cookie:
                 continue
             render = False if not chrome_ok else site.get("chrome")
@@ -81,7 +82,8 @@ class BuiltinIndexer(_IIndexClient):
                                                   pri=site.get('pri'),
                                                   public=False,
                                                   proxy=site.get("proxy"),
-                                                  render=render)
+                                                  render=render,
+                                                  token=token)
             if indexer:
                 if indexer_id and indexer.id == indexer_id:
                     return indexer
