@@ -796,13 +796,16 @@
           let code_img = ret.text.split("|")[0]
           let code_key = ret.text.split("|")[1]
           show_captcha_code_modal(code_img, code_key, siteid);
-        }
-        else if (ret.text.startsWith("data:email")){
+        } else if (ret.text.startsWith("data:email")){
           // email
           let code_img = ret.text.split("|")[0]
           let code_key = ret.text.split("|")[1]
           show_captcha_code_modal(code_img, code_key, siteid);
-        }else if (ret.text.startsWith("data:email_verify_code")){
+        } else if (ret.text.startsWith("data:email_verify_code")){
+          let code_img = ret.text.split("|")[0]
+          let code_key = ret.text.split("|")[1]
+          show_captcha_code_modal(code_img, code_key, siteid);
+        } else if (ret.text.startsWith("data:twostep_verify_code")){
           let code_img = ret.text.split("|")[0]
           let code_key = ret.text.split("|")[1]
           show_captcha_code_modal(code_img, code_key, siteid);
@@ -843,6 +846,8 @@
       $("#captcha_code_title").text("请在 60s 内输入邮箱")
     }else if(code_img === "data:email_verify_code"){
       $("#captcha_code_title").text("请在 60s 内输入邮箱验证码")
+    }else if(code_img === "data:twostep_verify_code"){
+      $("#captcha_code_title").text("请在 60s 内输入二次验证码")
     }else{
       $("#captcha_code_img").attr("src", code_img);
       $("#captcha_code_title").text("请在 60s 内输入验证码")
