@@ -213,7 +213,45 @@ class SiteCookie(object):
             return chrome.get_cookies(), chrome.get_ua(), ""
         else:
             if url.find("m-team") != -1:
-                if "郵箱驗證碼" in html_text:
+                if "雙重認證碼" in html_text:
+                    time.sleep(5)
+                    twostepcode_xpath = '//input[@id="otpCode"]'
+                    login_submit_xpath = '//*[@id="root"]/div/div/div[1]/div/div/div/div/form/button'
+                    twostep_code = None
+                    code_key = StringUtils.generate_random_str(5)
+                    for sec in range(60, 0, -1):
+                        if self.get_code(code_key):
+                            # 用户输入了
+                            twostep_code = self.get_code(code_key)
+                            log.info("【Sites】二次验证码：%s" % twostep_code)
+                            self.progress.update(ptype=ProgressKey.SiteCookie,
+                                                 text="接收到二次验证码：%s" % twostep_code)
+                            break
+                        else:
+                            code_bin = f"data:twostep_verify_code"
+                            # 推送到前端
+                            self.progress.update(ptype=ProgressKey.SiteCookie,
+                                                 text=f"{code_bin}|{code_key}")
+                            time.sleep(1)
+                    if not twostep_code:
+                        return None, None, "二次验证码输入超时"
+                    chrome.browser.find_element(By.XPATH, twostepcode_xpath).send_keys(twostep_code)
+
+                    # submit again try refresh, check again
+                    login_submit_obj = WebDriverWait(driver=chrome.browser,
+                                                     timeout=10).until(es.element_to_be_clickable((By.XPATH,
+                                                                                                   login_submit_xpath)))
+                    login_submit_obj.click()
+                    # 等待页面刷新完毕
+                    WebDriverWait(driver=chrome.browser, timeout=20).until(es.staleness_of(login_submit_obj))
+                    time.sleep(1)
+
+                    # check again
+                    html_text = chrome.get_html()
+                    if SiteHelper.is_logged_in(html_text):
+                        auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
+                        return auth, chrome.get_ua(), ""
+                elif "郵箱驗證碼" in html_text:
                     time.sleep(5)
                     # email handler
                     email_xpath = '//input[@id="email"]'
@@ -283,44 +321,7 @@ class SiteCookie(object):
                     if SiteHelper.is_logged_in(html_text):
                         auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
                         return auth, chrome.get_ua(), ""
-                elif "雙重認證碼" in html_text:
-                    time.sleep(5)
-                    twostepcode_xpath = '//input[@id="otpCode"]'
-                    login_submit_xpath = '//*[@id="root"]/div/div/div[1]/div/div/div/div/form/button'
-                    twostep_code = None
-                    code_key = StringUtils.generate_random_str(5)
-                    for sec in range(60, 0, -1):
-                        if self.get_code(code_key):
-                            # 用户输入了
-                            twostep_code = self.get_code(code_key)
-                            log.info("【Sites】二次验证码：%s" % twostep_code)
-                            self.progress.update(ptype=ProgressKey.SiteCookie,
-                                                 text="接收到二次验证码：%s" % twostep_code)
-                            break
-                        else:
-                            code_bin = f"data:twostep_verify_code"
-                            # 推送到前端
-                            self.progress.update(ptype=ProgressKey.SiteCookie,
-                                                 text=f"{code_bin}|{code_key}")
-                            time.sleep(1)
-                    if not twostep_code:
-                        return None, None, "二次验证码输入超时"
-                    chrome.browser.find_element(By.XPATH, twostepcode_xpath).send_keys(twostep_code)
 
-                    # submit again try refresh, check again
-                    login_submit_obj = WebDriverWait(driver=chrome.browser,
-                                                     timeout=10).until(es.element_to_be_clickable((By.XPATH,
-                                                                                                   login_submit_xpath)))
-                    login_submit_obj.click()
-                    # 等待页面刷新完毕
-                    WebDriverWait(driver=chrome.browser, timeout=20).until(es.staleness_of(login_submit_obj))
-                    time.sleep(1)
-
-                    # check again
-                    html_text = chrome.get_html()
-                    if SiteHelper.is_logged_in(html_text):
-                        auth = chrome.get_local_storage(["apiHost", "auth", "lastCheckTime"])
-                        return auth, chrome.get_ua(), ""
             # 读取错误信息
             error_xpath = None
             for xpath in login_conf.get("error"):
