@@ -3,6 +3,7 @@ import json
 import time
 
 from lxml import etree
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as es
 from selenium.webdriver.support.wait import WebDriverWait
@@ -136,7 +137,7 @@ class SiteCookie(object):
         # 点击登录按钮
         try:
             submit_obj = WebDriverWait(driver=chrome.browser,
-                                       timeout=6).until(es.element_to_be_clickable((By.XPATH,
+                                       timeout=30).until(es.element_to_be_clickable((By.XPATH,
                                                                                     submit_xpath)))
             if submit_obj:
                 # 输入用户名
@@ -196,6 +197,8 @@ class SiteCookie(object):
                 WebDriverWait(driver=chrome.browser, timeout=30).until(es.staleness_of(submit_obj))
             else:
                 return None, None, "未找到登录按钮"
+        except TimeoutException:
+            return None, None, "仿真登录失败:超时"
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
             return None, None, "仿真登录失败：%s" % str(e)
