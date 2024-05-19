@@ -1,6 +1,8 @@
 import json
 import time
 
+from selenium.common import TimeoutException
+
 from app.conf import SystemConfig
 from app.helper.cloudflare_helper import under_challenge
 from app.plugins.modules._autosignin._base import _ISiteSigninHandler
@@ -182,6 +184,8 @@ class MTeam(_ISiteSigninHandler):
                 WebDriverWait(driver=chrome.browser, timeout=20).until(es.staleness_of(submit_obj))
             else:
                 return None, None, "未找到登录按钮"
+        except TimeoutException:
+            return None, None, "仿真登录失败：超时"
         except Exception as e:
             ExceptionUtils.exception_traceback(e)
             return None, None, "仿真登录失败：%s" % str(e)
