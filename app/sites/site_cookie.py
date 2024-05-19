@@ -304,7 +304,7 @@ class SiteCookie(object):
                                                  text=f"{code_bin}|{code_key}")
                             time.sleep(1)
                     if not twostep_code:
-                        return None, None, "email 验证码输入超时"
+                        return None, None, "二次验证码输入超时"
                     chrome.browser.find_element(By.XPATH, twostepcode_xpath).send_keys(twostep_code)
 
                     # submit again try refresh, check again
