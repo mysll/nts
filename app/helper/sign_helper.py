@@ -49,7 +49,7 @@ class SignChromeHelper(object):
             SystemUtils.chmod755(download_webdriver_path)
             driver_executable_path = download_webdriver_path
         except Exception as err:
-             ExceptionUtils.exception_traceback(err)
+            ExceptionUtils.exception_traceback(err)
 
     @property
     def browser(self):
