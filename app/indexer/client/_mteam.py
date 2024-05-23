@@ -98,9 +98,9 @@ class MTeam:
                 }
                 torrents.append(torrent)
         elif res is not None:
-            log.warn(f"【INDEXER】{self._name} 搜索失败，错误码：{res.status_code}")
+            log.warn(f"【INDEXER】{self._indexer_name} 搜索失败，错误码：{res.status_code}")
             return True, []
         else:
-            log.warn(f"【INDEXER】{self._name} 搜索失败，无法连接 {self._domain}")
+            log.warn(f"【INDEXER】{self._indexer_name} 搜索失败，无法连接 {self._domain}")
             return True, []
         return False, torrents

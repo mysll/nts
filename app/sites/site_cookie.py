@@ -9,7 +9,8 @@ from selenium.webdriver.support import expected_conditions as es
 from selenium.webdriver.support.wait import WebDriverWait
 
 import log
-from app.helper import ChromeHelper, ProgressHelper, OcrHelper, SiteHelper
+from app.helper import ProgressHelper, OcrHelper, SiteHelper
+from app.helper.sign_helper import SignChromeHelper
 from app.sites.siteconf import SiteConf
 from app.sites.sites import Sites
 from app.utils import StringUtils, RequestUtils, ExceptionUtils
@@ -67,7 +68,7 @@ class SiteCookie(object):
         if not url or not username or not password:
             return None, None, "参数错误"
         # 全局锁
-        chrome = ChromeHelper()
+        chrome = SignChromeHelper()
         if not chrome.get_status():
             return None, None, "需要浏览器内核环境才能更新站点信息"
         if not chrome.visit(url=url, proxy=proxy):

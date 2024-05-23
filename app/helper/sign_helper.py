@@ -157,6 +157,21 @@ class SignChromeHelper(object):
         except Exception as err:
             print(str(err))
 
+    def get_local_storage(self, keys=None):
+        try:
+            local_storage_content = self.execute_script("return JSON.stringify(window.localStorage);")
+            if not keys:
+                return local_storage_content
+            local_json = json.loads(local_storage_content)
+            ret = {}
+            for key in local_json:
+                if key in keys:
+                    ret[key] = local_json[key]
+            return json.dumps(ret)
+        except Exception as e:
+            ExceptionUtils.exception_traceback(e)
+            return ""
+
     def get_title(self):
         if not self._chrome:
             return ""
