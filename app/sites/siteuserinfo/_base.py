@@ -11,7 +11,7 @@ from lxml import etree
 import log
 from app.helper import SiteHelper, ChromeHelper
 from app.helper.cloudflare_helper import under_challenge
-from app.utils import RequestUtils
+from app.utils import RequestUtils, StringUtils
 from app.utils.types import SiteSchema
 from config import Config
 
@@ -83,6 +83,7 @@ class _ISiteUserInfo(metaclass=ABCMeta):
         self.site_name = site_name
         self.site_url = url
         self._base_url = f"{split_url.scheme}://{split_url.netloc}"
+        self._api_url = None
         self._favicon_url = urljoin(self._base_url, "favicon.ico")
         self.site_favicon = ""
         self._site_cookie = site_cookie

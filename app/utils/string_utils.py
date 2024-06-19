@@ -4,6 +4,7 @@ import hashlib
 import random
 import re
 from urllib import parse
+from urllib.parse import urlsplit
 
 import cn2an
 import dateparser
@@ -270,6 +271,16 @@ class StringUtils:
         if len(netloc) >= 2:
             return netloc[-2]
         return netloc[0]
+
+    @staticmethod
+    def get_mteam_api_url(url):
+        scheme, netloc = StringUtils.get_url_netloc(url)
+        if not netloc:
+            return ""
+        netloc = netloc.split(":")[0].split(".")
+        netloc[0] = 'api'
+        netloc = ".".join(netloc)
+        return f"{scheme}://{netloc}"
 
     @staticmethod
     def get_base_url(url):

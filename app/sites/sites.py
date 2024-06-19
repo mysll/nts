@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 import log
 from app.helper import ChromeHelper, SiteHelper, DbHelper
@@ -256,10 +256,12 @@ class Sites:
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         })
 
+        api_url = StringUtils.get_mteam_api_url(site_info.get("signurl"))
+
         res = RequestUtils(headers=req_headers,
                            proxies=proxy,
                            api_key=token,
-                           ).post_res(url=urljoin(site_info.get("signurl"), "api/torrent/genDlToken"),
+                           ).post_res(url=urljoin(api_url, "api/torrent/genDlToken"),
                                       params={"id": tid})
 
         if res and res.status_code == 200:

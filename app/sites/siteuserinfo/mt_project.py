@@ -20,12 +20,14 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
         return 'M-Team' in html_text
 
     def parse(self):
+        if not self._api_url:
+            self._api_url = StringUtils.get_mteam_api_url(self._base_url)
         self._parse_favicon(self._index_html)
         if not self._parse_logged_in(""):
             return
         self._parse_site_page("")
         self._parse_user_base_info(
-            self._get_page_content(urljoin(self._base_url, self._user_detail_page)))
+            self._get_page_content(urljoin(self._api_url, self._user_detail_page)))
         self._parse_seeding_pages()
         self.seeding_info = json.dumps(self.seeding_info)
 
@@ -39,14 +41,14 @@ class MTeamSiteUserInfo(_ISiteUserInfo):
 
         # 第一页
         next_page = self._parse_user_torrent_seeding_info(
-            self._get_page_content(urljoin(self._base_url, self._torrent_seeding_page),
+            self._get_page_content(urljoin(self._api_url, self._torrent_seeding_page),
                                    params=json.dumps(req),
                                    headers=header))
 
         while next_page:
             req["pageNumber"] = next_page
             next_page = self._parse_user_torrent_seeding_info(
-                self._get_page_content(urljoin(urljoin(self._base_url, self._torrent_seeding_page), next_page),
+                self._get_page_content(urljoin(urljoin(self._api_url, self._torrent_seeding_page), next_page),
                                        self._torrent_seeding_params,
                                        self._torrent_seeding_headers),
                 multi_page=True)

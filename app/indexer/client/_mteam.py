@@ -1,4 +1,4 @@
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 import requests
 
@@ -25,7 +25,7 @@ class MTeam:
         self._indexer_name = indexer.name
         self._cookie = indexer.cookie
         self._token = indexer.token
-        self._domain = indexer.domain
+        self._domain = StringUtils.get_mteam_api_url(indexer.domain)
         self._search_url = urljoin(self._domain, self._api_url)
         if indexer.proxy:
             self._proxy = Config().get_proxies()
